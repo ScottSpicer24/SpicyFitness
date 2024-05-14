@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-spicyfitness-dev-5c117-authRole",
+      "UnauthRoleArn": "arn:aws:iam::696816923853:role/amplify-spicyfitness-dev-5c117-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::696816923853:role/amplify-spicyfitness-dev-5c117-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-spicyfitness-dev-5c117-deployment",
+      "UnauthRoleName": "amplify-spicyfitness-dev-5c117-unauthRole",
+      "StackName": "amplify-spicyfitness-dev-5c117",
+      "StackId": "arn:aws:cloudformation:us-east-1:696816923853:stack/amplify-spicyfitness-dev-5c117/9915ed70-117d-11ef-92d6-0affd96cf86b",
+      "AmplifyAppId": "d2qggljolle984"
+    },
+    "categories": {
+      "auth": {
+        "spicyFitAuth": {}
+      }
+    }
+  }
+}

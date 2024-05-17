@@ -4,6 +4,10 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './app/Login';
 import Register from './app/Register';
+import { Amplify } from 'aws-amplify';
+import config from './src/amplifyconfiguration.json';
+import Confirm from './app/Confirm';
+Amplify.configure(config);
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +17,7 @@ export default function App() {
       <Stack.Navigator>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Confirm" component={Confirm} initialParams={{email : 'scott@email.com'}} />
       </Stack.Navigator>
     </NavigationContainer>
 

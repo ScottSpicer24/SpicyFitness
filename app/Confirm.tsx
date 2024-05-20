@@ -28,9 +28,13 @@ const Confirm = ({navigation, route} : any) => {
                     Alert.alert('Note', 'Email verified but password is incorrect. Return to the sign in page and try again', [{text: 'Close', onPress: () => console.log('Cancel Pressed')}])
                 }
             }
-        } catch (error) {
-            Alert.alert('Error', 'Incorrect code.', [{text: 'Close', onPress: () => console.log('Cancel Pressed')}])
-           console.log('error confirming sign up', error);
+        } 
+        catch (error : any) {
+          // Check if error message is available
+          const errorMessage = error.message || 'An error occurred during sign up confirmation';
+
+          Alert.alert('Error', errorMessage, [{ text: 'Close', onPress: () => console.log('Cancel Pressed') }]);
+          console.log('error signing up:', error);
         }
     }
 
@@ -45,7 +49,7 @@ const Confirm = ({navigation, route} : any) => {
                 <Text style={styles.text}>Confirm</Text>
             </Pressable>
 
-            <Pressable style={styles.buttonSmall} onPress={ () => Alert.alert('Rejected', 'No, not later, do it now.', [{text: 'Close', onPress: () => console.log('Cancel Pressed')}])}>
+            <Pressable style={styles.buttonSmall} onPress={ () => Alert.alert('Rejected', 'No, not later, now.', [{text: 'Close', onPress: () => console.log('Cancel Pressed')}])}>
                 <Text>Later</Text>
             </Pressable>
         </View>

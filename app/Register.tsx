@@ -72,8 +72,11 @@ const Register = ({ navigation } : any) => {
             }
             
         }
-        catch (error) {
-            Alert.alert('Error', 'Please make sure password is of length 8, has an uppercase and a lowercase letter, as well as a number.', [{text: 'Close', onPress: () => console.log('Cancel Pressed')}])
+        catch (error : any) {
+            // Check if error message is available
+            const errorMessage = error.message || 'An error occurred during sign up';
+
+            Alert.alert('Error', errorMessage, [{ text: 'Close', onPress: () => console.log('Cancel Pressed') }]);
             console.log('error signing up:', error);
         }
     }

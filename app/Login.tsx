@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
+import { Button, StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState }  from 'react'
 import { signIn, signOut } from 'aws-amplify/auth';
 import { handleSignOut } from './functions/AuthFunctions';
@@ -28,9 +28,13 @@ const Login = ({ navigation } : any) => {
                 navigation.navigate('Confirm', {email: user, password : password}) 
             }
         } 
-        catch (error) {
-            console.log('error signing in', error);
-        }
+        catch (error : any) {
+          // Check if error message is available
+          const errorMessage = error.message || 'An error occurred during sign in';
+
+          Alert.alert('Error', errorMessage, [{ text: 'Close', onPress: () => console.log('Cancel Pressed') }]);
+          console.log('error signing up:', error);
+      }
     }
 
     return (
@@ -48,6 +52,10 @@ const Login = ({ navigation } : any) => {
             
             <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.text}>Register</Text>
+            </Pressable>
+
+            <Pressable style={styles.button} onPress={() => navigation.navigate('ForgotPW')}>
+                <Text style={styles.text}>Forgot Password</Text>
             </Pressable>
 
             <Button title="signout" onPress={() => handleSignOut()} />

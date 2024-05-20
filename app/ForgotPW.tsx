@@ -38,8 +38,12 @@ const ForgotPW = ({navigation, route} : any) => {
 
             Alert.alert('Success', 'Your password was reset. Click continue to return to the login page.', [{text: 'Continue', onPress: () => navigation.navigate("Login")}])
         }
-        catch(e){
-            console.log("error caught: ", e)
+        catch (error : any) {
+            // Check if error message is available
+            const errorMessage = error.message || 'An error occurred during password reset';
+
+            Alert.alert('Error', errorMessage, [{ text: 'Close', onPress: () => console.log('Cancel Pressed') }]);
+            console.log('error signing up:', error);
         }
     }
     

@@ -1,4 +1,4 @@
-import { signIn, signOut, signUp, confirmSignUp } from 'aws-amplify/auth';
+import { signIn, signOut} from 'aws-amplify/auth';
  
 type SigninParameters = {
     user: string,

@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, createContext, Children } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+
 import { Amplify } from 'aws-amplify';
 import { fetchAuthSession, getCurrentUser} from 'aws-amplify/auth';
 import config from './src/amplifyconfiguration.json';
-import Login from './app/Login';
-import Register from './app/Register';
-import Confirm from './app/Confirm';
-import ForgotPW from './app/ForgotPW';
-import Home from './app/Home'; // Make sure to create and import your Home component
+import { AuthContext } from './app/context/AuthContext';
+
+import Login from './app/screens/Login';
+import Register from './app/screens/Register';
+import Confirm from './app/screens/Confirm';
+import ForgotPW from './app/screens/ForgotPW';
+import Home from './app/screens/Home'; 
 
 Amplify.configure(config);
 
@@ -29,10 +32,64 @@ const AuthNavigator = () => (
 const MainNavigator = () => (
   <MainStack.Navigator>
     <MainStack.Screen name="Home" component={Home} />
-    {/* Add other main app screens here */}
   </MainStack.Navigator>
 );
 
+export const updateAuthStatus = async () => {
+    const isUserAuth = useContext(AuthContext)
+    
+    try {
+        await fetchAuthSession();
+        isUserAuth.setIsAuthenticated(true);
+    } 
+    catch {
+      isUserAuth.setIsAuthenticated(false);
+    }
+
+    return isUserAuth.isAuthenticated
+};
+
+export default function App() {
+  const isUserAuthenticated = useContext(AuthContext)
+
+  useEffect(() => {
+    updateAuthStatus();
+    console.log(isUserAuthenticated)
+  })
+
+  return (
+    <AuthContext.Provider value={isUserAuthenticated}>
+        <NavigationContainer>
+          {isUserAuthenticated.isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
+        </NavigationContainer>
+    </AuthContext.Provider>
+    
+  )
+}
+
+
+
+/*
+const App = () => {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <NavigationContainer>
+      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
+};
+
+export default function Root() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}
+
+
+/*
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -62,6 +119,4 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-
-
+*/

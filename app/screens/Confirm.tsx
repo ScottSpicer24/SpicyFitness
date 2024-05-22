@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Alert, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { confirmSignUp, type ConfirmSignUpInput } from 'aws-amplify/auth';
-import { handleSignIn } from './functions/AuthFunctions';
+import { handleSignIn } from '../functions/AuthFunctions';
 
 
 type ConfirmParameters = {

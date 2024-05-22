@@ -1,7 +1,8 @@
 import { Button, StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState }  from 'react'
 import { signIn, signOut } from 'aws-amplify/auth';
-import { handleSignOut } from './functions/AuthFunctions';
+import { handleSignOut } from '../functions/AuthFunctions';
+import { updateAuthStatus } from '../../App';
 
 type SigninParameters = {
     user: string,
@@ -26,6 +27,9 @@ const Login = ({ navigation } : any) => {
 
             if(nextStep.signInStep === 'CONFIRM_SIGN_UP'){
                 navigation.navigate('Confirm', {email: user, password : password}) 
+            }
+            else{
+              updateAuthStatus()
             }
         } 
         catch (error : any) {

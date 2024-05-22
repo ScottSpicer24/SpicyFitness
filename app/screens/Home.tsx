@@ -1,15 +1,18 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
 import React, { useEffect } from 'react'
 import { signOut, fetchAuthSession } from 'aws-amplify/auth';
+import { reloadApp } from '../functions/AuthFunctions';
 
 const Home = () => {
 
     const HandleSignOut = async () => {
         const { tokens, credentials, identityId, userSub } = await fetchAuthSession();
-        console.log(tokens)
+        /*console.log(tokens)
         console.log(credentials)
         console.log(identityId)
         console.log(userSub)
+        await signOut();*/
+        //await reloadApp();
     }
   
     return (

@@ -1,5 +1,7 @@
 import { signIn, signOut} from 'aws-amplify/auth';
- 
+import RNRestart from 'react-native-restart';
+  
+
 type SigninParameters = {
     user: string,
     password: string

@@ -31,7 +31,7 @@ const Confirm = ({navigation, route} : any) => {
         } 
         catch (error : any) {
           // Check if error message is available
-          const errorMessage = error.message || 'An error occurred during sign up confirmation';
+          const errorMessage = 'An error occurred during sign up confirmation';
 
           Alert.alert('Error', errorMessage, [{ text: 'Close', onPress: () => console.log('Cancel Pressed') }]);
           console.log('error signing up:', error);

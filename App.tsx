@@ -35,61 +35,6 @@ const MainNavigator = () => (
   </MainStack.Navigator>
 );
 
-export const updateAuthStatus = async () => {
-    const isUserAuth = useContext(AuthContext)
-    
-    try {
-        await fetchAuthSession();
-        isUserAuth.setIsAuthenticated(true);
-    } 
-    catch {
-      isUserAuth.setIsAuthenticated(false);
-    }
-
-    return isUserAuth.isAuthenticated
-};
-
-export default function App() {
-  const isUserAuthenticated = useContext(AuthContext)
-
-  useEffect(() => {
-    updateAuthStatus();
-    console.log(isUserAuthenticated)
-  })
-
-  return (
-    <AuthContext.Provider value={isUserAuthenticated}>
-        <NavigationContainer>
-          {isUserAuthenticated.isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
-        </NavigationContainer>
-    </AuthContext.Provider>
-    
-  )
-}
-
-
-
-/*
-const App = () => {
-  const { isAuthenticated } = useAuth();
-
-  return (
-    <NavigationContainer>
-      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
-  );
-};
-
-export default function Root() {
-  return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  );
-}
-
-
-/*
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -119,4 +64,4 @@ export default function App() {
     </NavigationContainer>
   );
 }
-*/
+

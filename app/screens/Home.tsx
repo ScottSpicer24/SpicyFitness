@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Button } from 'react-native'
 import React, { useEffect } from 'react'
 import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 
+
 const Home = () => {
 
     useEffect(() => {
@@ -11,8 +12,8 @@ const Home = () => {
       const checkAuthStatus = async () => {
         try {
           const { tokens } = await fetchAuthSession();
-          console.log("Users tokens: ", tokens);
-          console.log("Users tokens ID: ", tokens?.idToken);
+          //console.log("Users tokens: ", tokens);
+          //console.log("Users tokens ID: ", tokens?.idToken);
           const response = getCurrentUser()
           console.log("curr user: ", (await response).userId)
         } 
@@ -35,9 +36,7 @@ const Home = () => {
         try{
           const { tokens } = await fetchAuthSession();
           console.log(`ID token: ${tokens?.idToken}`);
-          //console.log(`Access token: ${tokens?.accessToken}`);
           return tokens?.idToken;
-          //return tokens?.accessToken;
         }
         catch (err) {
           console.log(err);
@@ -57,16 +56,20 @@ const Home = () => {
       const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
 
       const data = {
-        "username" : getCurrentUserID(),
+        "username" : await getCurrentUserID(),
         "splitName" : "placeholder",
         "description" : "the description of the split goes here, maybe cap length?",
         "workouts" : []
       }
+      
+      const idToken = (await getIDToken()).toString();
+      const idTokenToPass = 'Bearer ' + idToken;
+      console.log("Id Token Passed: ", idTokenToPass);
 
       let response = await fetch(url, {
         method: "POST",
         headers: {
-          'Authorization' : 'Bearer ' + getIDToken().toString(),
+          'Authorization' : idTokenToPass,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)

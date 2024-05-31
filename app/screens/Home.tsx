@@ -5,27 +5,9 @@ import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 
 const Home = () => {
 
-    useEffect(() => {
-        checkAuthStatus();
-      }, []);
-
-      const checkAuthStatus = async () => {
-        try {
-          const { tokens } = await fetchAuthSession();
-          //console.log("Users tokens: ", tokens);
-          //console.log("Users tokens ID: ", tokens?.idToken);
-          const response = getCurrentUser()
-          console.log("curr user: ", (await response).userId)
-        } 
-        catch {
-          console.log("Error with fetchAuthSession().")
-        }
-      };
-
       async function getCurrentUserID() {
         try {
           const {  userId } = await getCurrentUser();
-          console.log(`userId: ${userId}`);
           return userId;
         } catch (err) {
           console.log(err);
@@ -35,19 +17,12 @@ const Home = () => {
       async function getIDToken(){
         try{
           const { tokens } = await fetchAuthSession();
-          console.log(`ID token: ${tokens?.idToken}`);
           return tokens?.idToken;
         }
         catch (err) {
           console.log(err);
         }
       }
-
-    const HandleSignOut = async () => {
-        const { tokens, credentials, identityId, userSub } = await fetchAuthSession();
-        await signOut();
-        console.log("signout called")
-    }
 
     const addSplit = async () => {
       console.log("--------------------");
@@ -64,7 +39,6 @@ const Home = () => {
       
       const idToken = (await getIDToken()).toString();
       const idTokenToPass = 'Bearer ' + idToken;
-      console.log("Id Token Passed: ", idTokenToPass);
 
       let response = await fetch(url, {
         method: "POST",
@@ -77,6 +51,7 @@ const Home = () => {
 
       response = await response.json();
       console.log("API call response: ", response);
+      console.log("--------------------");
     }
 
     
@@ -84,7 +59,7 @@ const Home = () => {
     <View style={styles.container}>
         <View style={styles.form}>
             <Text>Landing page!</Text>
-            <Button title="signout" onPress={() => HandleSignOut()} />
+            <Button title="signout" onPress={() => signOut()} />
             <Button title="add split" onPress={() => addSplit()} />
         </View>
     </View>

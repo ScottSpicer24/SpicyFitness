@@ -5,15 +5,37 @@ import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 
 const Home = () => {
     const [username, setUsername] = useState("")
+    const [isLoading, setIsLoading] = useState(true);
 
-      /*useEffect(() => {
-
-      })*/
+      useEffect(() => {
+          const userID = getCurrentUser();
+          console.log("In UseEffect: ", userID);
+          fetch("https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/userInfo?userID=" + userID)
+          .then(res => res.json())
+          .then(
+            (result) => {
+              setIsLoading(false);
+              //console.log(result.body);
+              setUsername(result.body);
+              //setErr(false);
+            }
+          )
+          .catch(
+            (error) => {
+              setIsLoading(false);
+              //setErr(true);
+              //console.log(error);
+            }
+          )
+      }, []);
   
       async function getCurrentUserID() {
         try {
-          const {  userId } = await getCurrentUser();
-          return userId;
+          const { username, userId, signInDetails } = await getCurrentUser();
+        console.log(`The username: ${username}`);
+        console.log(`The userId: ${userId}`);
+        console.log(`The signInDetails: ${signInDetails}`);
+        return userId.toString()
         } catch (err) {
           console.log(err);
         }
@@ -59,7 +81,7 @@ const Home = () => {
     return (
     <View style={styles.container}>
         <View style={styles.form}>
-            <Text>Landing page!</Text>
+            <Text>{username}</Text>
             <Button title="signout" onPress={() => signOut()} />
             <Button title="add split" onPress={() => addSplit()} />
         </View>

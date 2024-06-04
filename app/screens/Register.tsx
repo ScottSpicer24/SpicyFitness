@@ -5,18 +5,20 @@ import { autoSignIn, confirmSignUp, signUp } from 'aws-amplify/auth';
 
 
 type SignUpParameters = {
+    name: string;
     password: string;
     email: string;
     phone_number: string;
   };
 
 const Register = ({ navigation } : any) => {
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword , setConfirmPassword] = useState('');
   
-    const test = (em:string, pn:string, pw:string, cp:string) => {
+    const test = (nm: string, em:string, pn:string, pw:string, cp:string) => {
         let isError = false
         
         const validEmail = EmailValidator.validate(em);
@@ -44,12 +46,12 @@ const Register = ({ navigation } : any) => {
         console.log("error: ", isError)
         if(isError === false){
             // register user in the AWS pool using the aws-amplify/auth module.
-            handleSignUp({password: pw, email: em, phone_number: pn})
+            handleSignUp({name: nm, password: pw, email: em, phone_number: pn})
             console.log("sent to handleSignUp")
         } 
     }
 
-    const handleSignUp = async ({ password, email, phone_number}: SignUpParameters) => {
+    const handleSignUp = async ({ name, password, email, phone_number}: SignUpParameters) => {
         try{
             const { isSignUpComplete, userId, nextStep} = await signUp({
                 username : email,
@@ -57,7 +59,8 @@ const Register = ({ navigation } : any) => {
                 options : {
                     userAttributes: {
                         email : email,
-                        phone_number : "+" + phone_number
+                        phone_number : "+" + phone_number,
+                        name : name 
                     },
                     autoSignIn: true
                 }
@@ -84,19 +87,22 @@ const Register = ({ navigation } : any) => {
     return (
     <View style={styles.container}>
         <View style={styles.form}>
+            <Text>Name</Text>
+            <TextInput style={styles.textIn} placeholder='Name' onChangeText={(input: string) => setName(input)} value={name} />
+            
             <Text>Email</Text>
             <TextInput style={styles.textIn} placeholder='Email' onChangeText={(input: string) => setEmail(input)} value={email} />
             
             <Text>Phone Number</Text>
             <TextInput style={styles.textIn} placeholder='Phone Number' onChangeText={(input: string) => setPhoneNum(input)} value={phoneNum} />
-            
+
             <Text>Password</Text>
             <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Password' onChangeText={(input: string) => setPassword(input)} value={password} />
             
             <Text>Confirm Password</Text>
             <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Confirm' onChangeText={(input: string) => setConfirmPassword(input)} value={confirmPassword} />
             
-            <Pressable style={styles.button} onPress={() => {test(email, phoneNum, password, confirmPassword)}}>
+            <Pressable style={styles.button} onPress={() => {test(name, email, phoneNum, password, confirmPassword)}}>
                 <Text style={styles.text}>Register</Text>
             </Pressable>
         </View>

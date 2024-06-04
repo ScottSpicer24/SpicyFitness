@@ -1,10 +1,15 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 
 
 const Home = () => {
+    const [username, setUsername] = useState("")
 
+      /*useEffect(() => {
+
+      })*/
+  
       async function getCurrentUserID() {
         try {
           const {  userId } = await getCurrentUser();
@@ -25,9 +30,6 @@ const Home = () => {
       }
 
     const addSplit = async () => {
-      console.log("--------------------");
-      console.log("addSplit called");
-
       const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
 
       const data = {
@@ -51,7 +53,6 @@ const Home = () => {
 
       response = await response.json();
       console.log("API call response: ", response);
-      console.log("--------------------");
     }
 
     

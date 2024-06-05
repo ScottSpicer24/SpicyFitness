@@ -8,14 +8,20 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
 
       useEffect(() => {
-          const userID = getCurrentUser();
-          console.log("In UseEffect: ", userID);
-          fetch("https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/userInfo?userID=" + userID)
+        getUsersName();
+      }, [])
+
+      async function getUsersName(){
+          const resp = await getCurrentUser();
+          console.log("In getUsersName:", resp.userId);
+          const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/userInfo?userID=" +  resp.userId
+          console.log("URL passed: ", url)
+          fetch(url)
           .then(res => res.json())
           .then(
             (result) => {
               setIsLoading(false);
-              //console.log(result.body);
+              console.log("Response: ", result);
               setUsername(result.body);
               //setErr(false);
             }
@@ -27,7 +33,7 @@ const Home = () => {
               //console.log(error);
             }
           )
-      }, []);
+      }
   
       async function getCurrentUserID() {
         try {

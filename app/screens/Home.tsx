@@ -1,98 +1,81 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
+import { getIDToken, getCurrentUserID } from '../functions/AuthFunctions';
 
 
 const Home = () => {
     const [username, setUsername] = useState("")
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true)
+    const [err, setErr] = useState(false)
 
       useEffect(() => {
         getUsersName();
       }, [])
 
       async function getUsersName(){
-          const resp = await getCurrentUser();
-          console.log("In getUsersName:", resp.userId);
+          const resp = await getCurrentUser()
+          const idToken = await getIDToken()
           const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/userInfo?userID=" +  resp.userId
-          console.log("URL passed: ", url)
-          fetch(url)
+          fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}`
+            }
+          })
           .then(res => res.json())
           .then(
             (result) => {
               setIsLoading(false);
-              console.log("Response: ", result);
-              setUsername(result.body);
-              //setErr(false);
+              const parsedBody = JSON.parse(result.body)
+              setUsername(parsedBody.name)
+              setErr(false)
             }
           )
           .catch(
             (error) => {
-              setIsLoading(false);
-              //setErr(true);
-              //console.log(error);
+              setIsLoading(false)
+              setErr(true)
+              console.log(error)
             }
           )
       }
   
-      async function getCurrentUserID() {
-        try {
-          const { username, userId, signInDetails } = await getCurrentUser();
-        console.log(`The username: ${username}`);
-        console.log(`The userId: ${userId}`);
-        console.log(`The signInDetails: ${signInDetails}`);
-        return userId.toString()
-        } catch (err) {
-          console.log(err);
+      const addSplit = async () => {
+        const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
+
+        const data = {
+          "username" : await getCurrentUserID(),
+          "splitName" : "placeholder",
+          "description" : "the description of the split goes here, maybe cap length?",
+          "workouts" : []
         }
+        
+        const idToken = (await getIDToken()).toString();
+        const idTokenToPass = 'Bearer ' + idToken;
+
+        let response = await fetch(url, {
+          method: "POST",
+          headers: {
+            'Authorization' : idTokenToPass,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+
+        response = await response.json();
+        console.log("API call response: ", response);
       }
 
-      async function getIDToken(){
-        try{
-          const { tokens } = await fetchAuthSession();
-          return tokens?.idToken;
-        }
-        catch (err) {
-          console.log(err);
-        }
-      }
-
-    const addSplit = async () => {
-      const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
-
-      const data = {
-        "username" : await getCurrentUserID(),
-        "splitName" : "placeholder",
-        "description" : "the description of the split goes here, maybe cap length?",
-        "workouts" : []
-      }
-      
-      const idToken = (await getIDToken()).toString();
-      const idTokenToPass = 'Bearer ' + idToken;
-
-      let response = await fetch(url, {
-        method: "POST",
-        headers: {
-          'Authorization' : idTokenToPass,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-
-      response = await response.json();
-      console.log("API call response: ", response);
-    }
-
-    
     return (
-    <View style={styles.container}>
-        <View style={styles.form}>
-            <Text>{username}</Text>
-            <Button title="signout" onPress={() => signOut()} />
-            <Button title="add split" onPress={() => addSplit()} />
-        </View>
-    </View>
-  )
+      <View style={styles.container}>
+          <View style={styles.form}>
+              <Text>{username}</Text>
+              <Button title="signout" onPress={() => signOut()} />
+              <Button title="add split" onPress={() => addSplit()} />
+          </View>
+      </View>
+    )
 }
 
 export default Home

@@ -1,4 +1,4 @@
-import { signIn, signOut} from 'aws-amplify/auth';
+import { signIn, signOut, fetchAuthSession, getCurrentUser} from 'aws-amplify/auth';
 
   
 
@@ -30,3 +30,25 @@ export const handleSignIn = async ({ user, password } : SigninParameters) => {
         return false;
     }
 }
+
+export async function getIDToken(){
+    try{
+      const { tokens } = await fetchAuthSession();
+      return tokens?.idToken;
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+export async function getCurrentUserID() {
+    try {
+        const { username, userId, signInDetails } = await getCurrentUser();
+        /*console.log(`The username: ${username}`);
+        console.log(`The userId: ${userId}`);
+        console.log(`The signInDetails: ${signInDetails}`);*/
+        return userId.toString()
+    } catch (err) {
+      console.log(err);
+    }
+  }

@@ -1,7 +1,8 @@
-import { Button, StyleSheet, Text, TextInput, View, Pressable, Modal, Alert } from 'react-native'
+import { Text, TextInput, View, Pressable, Modal, Alert } from 'react-native'
 import React, { useState } from 'react'
 import * as EmailValidator from 'email-validator'
-import { autoSignIn, confirmSignUp, signUp } from 'aws-amplify/auth';
+import { signUp } from 'aws-amplify/auth';
+import { styles } from '../Styles';
 
 
 type SignUpParameters = {
@@ -13,12 +14,12 @@ type SignUpParameters = {
 
 const Register = ({ navigation } : any) => {
   const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword , setConfirmPassword] = useState('');
   
-    const test = (nm: string, em:string, pn:string, pw:string, cp:string) => {
+    const validateData = (nm: string, em:string, pn:string, pw:string, cp:string) => {
         let isError = false
         
         const validEmail = EmailValidator.validate(em);
@@ -102,7 +103,7 @@ const Register = ({ navigation } : any) => {
             <Text>Confirm Password</Text>
             <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Confirm' onChangeText={(input: string) => setConfirmPassword(input)} value={confirmPassword} />
             
-            <Pressable style={styles.button} onPress={() => {test(name, email, phoneNum, password, confirmPassword)}}>
+            <Pressable style={styles.button} onPress={() => {validateData(name, email, phoneNum, password, confirmPassword)}}>
                 <Text style={styles.text}>Register</Text>
             </Pressable>
         </View>
@@ -111,41 +112,3 @@ const Register = ({ navigation } : any) => {
 }
 
 export default Register
-
-const styles = StyleSheet.create({
-    container: { // style={styles.container}
-        marginHorizontal : 20, 
-      },
-      form: { // style={styles.form}
-        marginVertical: 20,
-        flexDirection : 'column',
-        alignItems: 'center',
-      },
-      textIn: { //style={styles.textIn}
-        height: 40,
-        width: 200,
-        borderWidth: 1,
-        borderRadius: 4,
-        padding: 10,
-        marginBottom: 15,
-        marginTop: 3,
-        backgroundColor: '#fff'
-      },
-      button: { // style={styles.button}
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 32,
-        margin: 40,
-        borderRadius: 4,
-        elevation: 3,
-        backgroundColor: 'blue',
-      },
-      text: { // style={styles.text}
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: 'white',
-      }
-})

@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Button } from 'react-native'
+import { Text, View, Button, Pressable} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken, getCurrentUserID } from '../functions/AuthFunctions';
+import { styles, generateBoxShadowStyle } from '../Styles';
 
 
 const Home = () => {
@@ -51,13 +52,12 @@ const Home = () => {
           "workouts" : []
         }
         
-        const idToken = (await getIDToken()).toString();
-        const idTokenToPass = 'Bearer ' + idToken;
+        const idToken = await getIDToken()
 
         let response = await fetch(url, {
           method: "POST",
           headers: {
-            'Authorization' : idTokenToPass,
+            'Authorization' : `Bearer ${idToken}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(data)
@@ -67,53 +67,31 @@ const Home = () => {
         console.log("API call response: ", response);
       }
 
+      async function weightButton(){
+        console.log("weight button pressed, current weight: 1000lbs (fat)");
+      }
+
+      generateBoxShadowStyle();
+
     return (
       <View style={styles.container}>
           <View style={styles.form}>
               <Text>{username}</Text>
-              <Button title="signout" onPress={() => signOut()} />
-              <Button title="add split" onPress={() => addSplit()} />
+              
+              <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
+                <Text style={styles.text}>Test card, will hold last recorded weight</Text>
+              </Pressable>
+
+              <Pressable style={[styles.card, styles.boxShadow]} onPress={() => addSplit()}>
+                <Text style={styles.text}>Add Lift (text not centered)</Text>
+              </Pressable>
+              
+              <Pressable style={styles.button} onPress={() => signOut()}>
+                <Text style={styles.text}>Sign Out</Text>
+              </Pressable>
           </View>
       </View>
     )
 }
 
 export default Home
-
-const styles = StyleSheet.create({
-    container: { // style={styles.container}
-        marginHorizontal : 20, 
-      },
-      form: { // style={styles.form}
-        marginVertical: 20,
-        flexDirection : 'column',
-        alignItems: 'center',
-      },
-      textIn: { //style={styles.textIn}
-        height: 40,
-        width: 200,
-        borderWidth: 1,
-        borderRadius: 4,
-        padding: 10,
-        marginBottom: 15,
-        marginTop: 3,
-        backgroundColor: '#fff'
-      },
-      button: { // style={styles.button}
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 32,
-        margin: 20,
-        borderRadius: 4,
-        elevation: 3,
-        backgroundColor: 'blue',
-      },
-      text: { // style={styles.text}
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: 'white',
-      }
-  });

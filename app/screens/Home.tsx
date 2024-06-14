@@ -5,7 +5,7 @@ import { getIDToken, getCurrentUserID } from '../functions/AuthFunctions';
 import { styles, generateBoxShadowStyle } from '../Styles';
 
 
-const Home = () => {
+const Home = ({navigation, route} : any) => {
     const [username, setUsername] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [err, setErr] = useState(false)
@@ -69,6 +69,7 @@ const Home = () => {
 
       async function weightButton(){
         console.log("weight button pressed, current weight: 1000lbs (fat)");
+        navigation.navigate("Weight");
       }
 
       generateBoxShadowStyle();

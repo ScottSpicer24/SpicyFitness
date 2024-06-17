@@ -3,15 +3,28 @@ import React, { useEffect, useState } from 'react'
 import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken, getCurrentUserID } from '../functions/AuthFunctions';
 import { styles, generateBoxShadowStyle } from '../Styles';
+import { getCurrentWeight, WeightReturn} from '../functions/WeightFunctions';
 
 
 const Home = ({navigation, route} : any) => {
     const [username, setUsername] = useState("")
+    const [weight, setWeight] = useState("")
+    const [weightDate, setWeightDate] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [err, setErr] = useState(false)
 
       useEffect(() => {
         getUsersName();
+        generateBoxShadowStyle();
+        
+        async function initializeWeightInfo() {
+          const res = await getCurrentWeight();
+          setWeight(res.body.weight);
+          setWeightDate(res.body.date);
+          console.log("Initial weight and date: ", res.body);
+        }
+        initializeWeightInfo();
+
       }, [])
 
       async function getUsersName(){
@@ -68,11 +81,9 @@ const Home = ({navigation, route} : any) => {
       }
 
       async function weightButton(){
-        console.log("weight button pressed, current weight: 1000lbs (fat)");
+        console.log("weight button pressed");
         navigation.navigate("Weight");
       }
-
-      generateBoxShadowStyle();
 
     return (
       <View style={styles.container}>
@@ -80,7 +91,7 @@ const Home = ({navigation, route} : any) => {
               <Text>{username}</Text>
               
               <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
-                <Text style={styles.text}>Test card, will hold last recorded weight</Text>
+                <Text style={styles.text}>{weight} pounds as of {weightDate} </Text>
               </Pressable>
 
               <Pressable style={[styles.card, styles.boxShadow]} onPress={() => addSplit()}>

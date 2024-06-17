@@ -18,9 +18,7 @@ export const styles = StyleSheet.create({
         width: '100%',
         marginVertical: 15,
       },
-      boxShadow: {
-        
-      },
+      boxShadow: { },
       textIn: { //style={styles.textIn}
         height: 40,
         width: 200,
@@ -47,6 +45,12 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         letterSpacing: 0.25,
         color: 'white',
+      },
+      heading:{
+        justifyContent: 'center',
+        color: 'black',
+        fontWeight: 'bold',
+        fontSize: 15
       },
       buttonSmall: { // style={styles.buttonSmall}
         alignItems: 'center',

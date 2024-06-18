@@ -1,4 +1,4 @@
-import { Text, View, Button, Pressable} from 'react-native'
+import { Text, View, ActivityIndicator, Pressable} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken, getCurrentUserID } from '../functions/AuthFunctions';
@@ -11,7 +11,7 @@ const Home = ({navigation, route} : any) => {
     const [weight, setWeight] = useState("")
     const [weightDate, setWeightDate] = useState("")
     const [isLoading, setIsLoading] = useState(true)
-    const [err, setErr] = useState(false)
+    //const [err, setErr] = useState(false)
 
       useEffect(() => {
         getUsersName();
@@ -25,6 +25,7 @@ const Home = ({navigation, route} : any) => {
         }
         initializeWeightInfo();
 
+        setIsLoading(false);
       }, [])
 
       async function getUsersName(){
@@ -40,16 +41,14 @@ const Home = ({navigation, route} : any) => {
           .then(res => res.json())
           .then(
             (result) => {
-              setIsLoading(false);
               const parsedBody = JSON.parse(result.body)
               setUsername(parsedBody.name)
-              setErr(false)
+              //setErr(false)
             }
           )
           .catch(
             (error) => {
-              setIsLoading(false)
-              setErr(true)
+              //setErr(true)
               console.log(error)
             }
           )
@@ -85,25 +84,41 @@ const Home = ({navigation, route} : any) => {
         navigation.navigate("Weight");
       }
 
-    return (
-      <View style={styles.container}>
+      const visualComponents = () => {
+        if(isLoading){
+          return (
+            <View style={styles.form}>
+              <ActivityIndicator style={{ padding: 100 }} size="large" color="blue"/>
+            </View>
+            
+          )
+        }
+        else{
+          return (
           <View style={styles.form}>
-              <Text>{username}</Text>
-              
-              <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
-                <Text style={styles.text}>{weight} pounds as of {weightDate} </Text>
-              </Pressable>
+            <Text>{username}</Text>
+            
+            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
+              <Text style={styles.text}>{weight} pounds as of {weightDate} </Text>
+            </Pressable>
 
-              <Pressable style={[styles.card, styles.boxShadow]} onPress={() => addSplit()}>
-                <Text style={styles.text}>Add Lift (text not centered)</Text>
-              </Pressable>
-              
-              <Pressable style={styles.button} onPress={() => signOut()}>
-                <Text style={styles.text}>Sign Out</Text>
-              </Pressable>
+            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => addSplit()}>
+              <Text style={styles.text}>Add Lift (text not centered)</Text>
+            </Pressable>
+            
+            <Pressable style={styles.button} onPress={() => signOut()}>
+              <Text style={styles.text}>Sign Out</Text>
+            </Pressable>
           </View>
-      </View>
-    )
+          )
+        }
+      }
+
+      return (
+        <View style={styles.container}>
+          {visualComponents()}
+        </View>
+      )
 }
 
 export default Home

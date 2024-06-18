@@ -8,7 +8,11 @@ export type WeightReturn = {
         weight: string
     },
     statusCode : number
+}
 
+export type WeightArrayReturn = {
+    body : string,
+    statusCode : number
 }
 
 export async function getCurrentWeight() : Promise<WeightReturn> {
@@ -33,9 +37,7 @@ export async function getCurrentWeight() : Promise<WeightReturn> {
     catch (error){
         console.error('Error fetching weight data:', error);
         throw error;
-    }
-
-      
+    }    
 }
 
 export async function postWeight(weight : string){
@@ -60,3 +62,28 @@ export async function postWeight(weight : string){
     response = await response.json();
     console.log("API call response: ", response);
   }
+
+export async function getAllWeights() : Promise<WeightArrayReturn>{
+    const resp = await getCurrentUser()
+    const idToken = await getIDToken()
+
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/weight-all?userID=" +  resp.userId
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}`
+            }
+        })
+        if (!apiResp.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data : WeightArrayReturn = await apiResp.json();
+        return data
+    }
+    catch (error){
+        console.error('Error fetching weight data:', error);
+        throw error;
+    } 
+}

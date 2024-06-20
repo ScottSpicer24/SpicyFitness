@@ -19,13 +19,12 @@ const Home = ({navigation, route} : any) => {
         
         async function initializeWeightInfo() {
           const res = await getCurrentWeight();
-          setWeight(res.body.weight);
-          setWeightDate(res.body.date);
+          await setWeight(res.body.weight);
+          await setWeightDate(res.body.date);
           console.log("Initial weight and date: ", res.body);
+          setIsLoading(false);
         }
         initializeWeightInfo();
-
-        setIsLoading(false);
       }, [])
 
       async function getUsersName(){
@@ -58,10 +57,10 @@ const Home = ({navigation, route} : any) => {
         const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
 
         const data = {
-          "username" : await getCurrentUserID(),
+          "userID" : await getCurrentUserID(),
           "splitName" : "placeholder",
           "description" : "the description of the split goes here, maybe cap length?",
-          "workouts" : []
+          "splitDays" : []
         }
         
         const idToken = await getIDToken()
@@ -78,6 +77,7 @@ const Home = ({navigation, route} : any) => {
         response = await response.json();
         console.log("API call response: ", response);
       }
+
 
       async function weightButton(){
         console.log("weight button pressed");
@@ -102,7 +102,7 @@ const Home = ({navigation, route} : any) => {
               <Text style={styles.text}>{weight} pounds as of {weightDate} </Text>
             </Pressable>
 
-            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => addSplit()}>
+            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
               <Text style={styles.text}>Add Lift (text not centered)</Text>
             </Pressable>
             

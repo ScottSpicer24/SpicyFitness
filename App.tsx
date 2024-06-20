@@ -15,6 +15,7 @@ import Confirm from './app/screens/Confirm';
 import ForgotPW from './app/screens/ForgotPW';
 import Home from './app/screens/Home'; 
 import Weight from './app/screens/Weight';
+import Splits from './app/screens/Splits';
 
 Amplify.configure(config);
 
@@ -34,6 +35,7 @@ const MainNavigator = () => (
   <MainStack.Navigator>
     <MainStack.Screen name="Home" component={Home} />
     <MainStack.Screen name="Weight" component={Weight} />
+    <MainStack.Screen name="Splits" component={Splits} />
   </MainStack.Navigator>
 );
 

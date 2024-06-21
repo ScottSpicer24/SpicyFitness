@@ -52,32 +52,6 @@ const Home = ({navigation, route} : any) => {
             }
           )
       }
-  
-      const addSplit = async () => {
-        const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
-
-        const data = {
-          "userID" : await getCurrentUserID(),
-          "splitName" : "placeholder",
-          "description" : "the description of the split goes here, maybe cap length?",
-          "splitDays" : []
-        }
-        
-        const idToken = await getIDToken()
-
-        let response = await fetch(url, {
-          method: "POST",
-          headers: {
-            'Authorization' : `Bearer ${idToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
-
-        response = await response.json();
-        console.log("API call response: ", response);
-      }
-
 
       async function weightButton(){
         console.log("weight button pressed");

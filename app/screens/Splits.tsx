@@ -1,21 +1,30 @@
-import { View, Text, ActivityIndicator, FlatList, Pressable } from 'react-native'
+import { View, Text, ActivityIndicator, FlatList, Pressable, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { styles } from '../Styles'
-import { getSplitsAll, Return, SplitData } from '../functions/ExerciseFunctions'
+import { getSplitsAll, Return, SplitData, addSplitData } from '../functions/ExerciseFunctions'
 
 const Splits = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [splitData, setSplitData] = useState<SplitData[]>([])
+    const [showAddSplit, setShowAddSplit] = useState(false)
+    const [newSplitName, setNewSplitName] = useState("")
+    const [newDescription, setNewDescription] = useState("")
+    const [newSplitDays, setNewSplitDays] = useState<String[]>([])
 
     useEffect(() => {
         async function initializeInfo() {
-            const resp = await getSplitsAll()
-            const parsedBody = await JSON.parse(resp.body)
+            try{
+              const resp = await getSplitsAll()
+              const parsedBody = await JSON.parse(resp.body)
 
-            if(splitData[0] === undefined){
-                await fillSplitsArray(parsedBody)
+              if(splitData[0] === undefined){
+                  await fillSplitsArray(parsedBody)
+              }
+              setIsLoading(false);
             }
-            setIsLoading(false);
+            catch{
+              console.log("Error loading data in splits page useEffect")
+            }
           }
           initializeInfo()
            
@@ -23,7 +32,7 @@ const Splits = () => {
     
     async function fillSplitsArray(parsedBody : any) {
         /* DO NOT setState for each component. Causes issues 
-            because of the asynchronous nature or react native*/
+            because of the asynchronous nature or react native */
         const newEntries: SplitData[] = [];
         for (let i = 0; i < parsedBody.length; i++) {
             const newEntry: SplitData = parsedBody[i];
@@ -51,18 +60,28 @@ const Splits = () => {
             
           )
         }
-        else{
+        else if(!showAddSplit){
           return (
-          <View style={styles.form}>
-            <Text style={styles.heading}>Your Splits</Text>
-            <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
-            <Pressable style={styles.button} onPress={() => console.log("Pressed")}>
-              <Text style={styles.text}>Add New New</Text>
-            </Pressable>
-          </View>
+            <View style={styles.form}>
+                <Text style={styles.heading}>Your Splits</Text>
+                <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
+                <Pressable style={styles.button} onPress={() => setShowAddSplit(true)}>
+                <Text style={styles.text}>Add New New</Text>
+                </Pressable>
+            </View>
           )
         }
-      }
+        else{
+            return(
+                <View style={styles.form}>
+                    <Text style={styles.heading}>Your Splits</Text>
+                    <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
+                    <TextInput style={styles.textIn} placeholder='New Split Name' onChangeText={(input: string) => setNewSplitName(input)} value={newSplitName} />
+                    <TextInput style={styles.textInDesc} multiline={true} placeholder='New Split Decsription' onChangeText={(input: string) => setNewDescription(input)} value={newDescription} />
+                </View>
+            )
+        }
+    }
 
       return (
         <View style={styles.container}>

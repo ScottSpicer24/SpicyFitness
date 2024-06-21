@@ -16,6 +16,13 @@ export type SplitData = {
     "userID" : string
 }
 
+export type addSplitData = {
+    "userID" : string,
+    "splitName" : string,
+    "description" : string,
+    "splitDays" : string[]
+}
+
 
 export async function getSplitsAll() : Promise<Return>{
     const resp = await getCurrentUser()
@@ -40,4 +47,22 @@ export async function getSplitsAll() : Promise<Return>{
         console.error('Error fetching Splits:', error);
         throw error;
     }    
+}
+
+export async function addSplit(data : addSplitData) {
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/splits";
+        
+    const idToken = await getIDToken()
+
+    let response = await fetch(url, {
+        method: "POST",
+        headers: {
+            'Authorization' : `Bearer ${idToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+
+    response = await response.json();
+    console.log("API call response: ", response);
 }

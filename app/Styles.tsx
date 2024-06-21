@@ -21,7 +21,19 @@ export const styles = StyleSheet.create({
       boxShadow: { },
       textIn: { //style={styles.textIn}
         height: 40,
-        width: 200,
+        width: 150,
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 10,
+        marginBottom: 15,
+        marginTop: 10,
+        backgroundColor: '#fff'
+      },
+      textInDesc: { //style={styles.textInDesc}
+        textAlign: 'left',
+        textAlignVertical: 'top',
+        height: 150,
+        width: 250,
         borderWidth: 1,
         borderRadius: 4,
         padding: 10,

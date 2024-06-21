@@ -7,6 +7,15 @@ export type Return = {
     body : string
 }
 
+export type SplitData = {
+    "active" : boolean,
+    "description" : string,
+    "splitDayID" : string[],
+    "splitID" : string,
+    "splitName" : string,
+    "userID" : string
+}
+
 
 export async function getSplitsAll() : Promise<Return>{
     const resp = await getCurrentUser()

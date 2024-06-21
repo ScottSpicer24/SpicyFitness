@@ -103,7 +103,7 @@ const Home = ({navigation, route} : any) => {
             </Pressable>
 
             <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
-              <Text style={styles.text}>Add Lift (text not centered)</Text>
+              <Text style={styles.text}>Add Lift (fix text not centered)</Text>
             </Pressable>
             
             <Pressable style={styles.button} onPress={() => signOut()}>

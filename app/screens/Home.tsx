@@ -70,7 +70,7 @@ const Home = ({navigation, route} : any) => {
         else{
           return (
           <View style={styles.form}>
-            <Text>{username}</Text>
+            <Text style={styles.heading}>{username}</Text>
             
             <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
               <Text style={styles.text}>{weight} pounds as of {weightDate} </Text>

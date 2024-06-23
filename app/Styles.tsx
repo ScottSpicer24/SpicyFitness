@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
       textInDesc: { //style={styles.textInDesc}
         textAlign: 'left',
         textAlignVertical: 'top',
-        height: 150,
+        height: 100,
         width: 250,
         borderWidth: 1,
         borderRadius: 4,
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
         letterSpacing: 0.25,
         color: 'white',
       },
-      heading:{
+      heading:{ // style={styles.heading}
         justifyContent: 'center',
         color: 'black',
         fontWeight: 'bold',

@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, FlatList, Pressable, TextInput, ScrollView } from 'react-native'
+import { View, Text, ActivityIndicator, FlatList, Pressable, TextInput, ScrollView, SectionList} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { styles } from '../Styles'
 import { getSplitsAll, Return, SplitData, addSplitData } from '../functions/ExerciseFunctions'
@@ -10,6 +10,7 @@ const Splits = () => {
     const [newSplitName, setNewSplitName] = useState("")
     const [newDescription, setNewDescription] = useState("")
     const [newSplitDays, setNewSplitDays] = useState<string[]>([])
+    const [newDayInSplit, setNewDayInSplit] = useState("")
 
     useEffect(() => {
         async function initializeInfo() {
@@ -74,12 +75,13 @@ const Splits = () => {
                 <Text style={styles.heading}>Your Splits</Text>
                 <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
                 <Pressable style={styles.button} onPress={() => setShowAddSplit(true)}>
-                  <Text style={styles.text}>Add New New</Text>
+                  <Text style={styles.text}>Add New</Text>
                 </Pressable>
             </View>
           )
         }
-        /* DOES NOT SCROLLL IF GOES OFF SCREEN: FIXXXXXXXXXXXXXXXX 
+        /* 
+          DOES NOT SCROLLL IF GOES OFF SCREEN: FIX
           <ScrollView> is not supposed to be used with <FlatList> 
           Find a different solution.
         */
@@ -92,8 +94,9 @@ const Splits = () => {
                     <TextInput style={styles.textIn} placeholder='New Split Name' onChangeText={(input: string) => setNewSplitName(input)} value={newSplitName} />
                     <TextInput style={styles.textInDesc} multiline={true} placeholder='New Split Decsription' onChangeText={(input: string) => setNewDescription(input)} value={newDescription} />
                     
+                    <TextInput style={styles.textIn} placeholder='New Split Day' onChangeText={(input: string) => setNewDayInSplit(input)} value={newDayInSplit} />
                     <FlatList data={newSplitDays} renderItem={({item}) => showNewSplitDays(item)} />
-                    <Pressable style={styles.button} onPress={() => setNewSplitDays(newSplitDays.concat("New Day"))}>
+                    <Pressable style={styles.button} onPress={() => setNewSplitDays(newSplitDays.concat(newDayInSplit))}>
                       <Text style={styles.text}>Add Day</Text>
                     </Pressable>
 

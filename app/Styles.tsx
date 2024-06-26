@@ -1,9 +1,20 @@
 import { Platform, StyleSheet } from 'react-native'
 
 
+const sand_tan : string = '#FFF5E1'
+const light_blue : string = '#83B4FF'
+const steel_blue : string = '#5A72A0'
+const blue_black : string = '#1A2130'
+/*
+Color Pallette: https://colorhunt.co/palettes/popular
+Sand tan: #FFF5E1 -- Background of app?
+Light Blue: #83B4FF
+Steel Blue: #5A72A0
+Blue-Black: #1A2130
+*/
 export const styles = StyleSheet.create({
     container: { // style={styles.container}
-        marginHorizontal : 20, 
+        marginHorizontal : 20,
       },
       form: { // style={styles.form}
         marginVertical: 20,
@@ -11,7 +22,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
       },
       card: { // style={[styles.card, styles.shadowProp]}
-        backgroundColor: 'skyblue',
+        backgroundColor: light_blue,
         borderRadius: 8,
         paddingVertical: 65,
         paddingHorizontal: 20,
@@ -49,18 +60,32 @@ export const styles = StyleSheet.create({
         margin: 20,
         borderRadius: 4,
         elevation: 3,
-        backgroundColor: 'blue',
+        backgroundColor: blue_black,
       },
       text: { // style={styles.text}
         fontSize: 16,
         lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,
-        color: 'white',
+        color: sand_tan,
       },
       heading:{ // style={styles.heading}
         justifyContent: 'center',
-        color: 'black',
+        color: steel_blue,
+        fontWeight: 'bold',
+        fontSize: 15
+      },
+      headingSplits: {
+        color: steel_blue,
+        fontWeight: 'bold',
+        fontSize: 20,
+        textAlign: "center",
+        textDecorationLine: "underline",
+        margin: 10,
+        paddingTop: 10
+      },
+      textSplits: {
+        color: steel_blue,
         fontWeight: 'bold',
         fontSize: 15
       },

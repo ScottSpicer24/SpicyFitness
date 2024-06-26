@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, FlatList, Pressable, TextInput, ScrollView, SectionList} from 'react-native'
+import { View, Text, ActivityIndicator, TouchableWithoutFeedback, Pressable, TextInput, ScrollView, Keyboard} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { styles } from '../Styles'
 import { getSplitsAll, Return, SplitData, addSplitData } from '../functions/ExerciseFunctions'
@@ -46,7 +46,7 @@ const Splits = () => {
     const showSplits = (item : SplitData) => {
         return (
             <View>
-                <Text style={{fontWeight: 'bold', fontSize: 15}}>{item.splitName}</Text>
+                <Text style={styles.textSplits}>{item.splitName}</Text>
                 <Text style={{marginBottom: 10}}>{item.description}</Text>
             </View>
         )
@@ -71,31 +71,34 @@ const Splits = () => {
         }
         else if(!showAddSplit){
           return (
-            <View style={styles.form}>
-                <Text style={styles.heading}>Your Splits</Text>
-                <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
+            <ScrollView>
+                <Text style={styles.headingSplits}>Your Splits</Text>
+                {splitData.map((item) => showSplits(item))}
+
                 <Pressable style={styles.button} onPress={() => setShowAddSplit(true)}>
                   <Text style={styles.text}>Add New</Text>
                 </Pressable>
-            </View>
+            </ScrollView>
           )
         }
         /* 
-          DOES NOT SCROLLL IF GOES OFF SCREEN: FIX
+         <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
+         <ScrollView contentContainerStyle={{marginVertical: 20}}>
+          DOES NOT SCROLLL IF GOES OFF SCREEN
           <ScrollView> is not supposed to be used with <FlatList> 
-          Find a different solution.
+          Used Map instead
         */
         else{
             return(
-                <View style={styles.form}>
-                    <Text style={styles.heading}>Your Splits</Text>
-                    <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
+                <ScrollView>
+                    <Text style={styles.headingSplits}>Your Splits</Text>
+                    {splitData.map((item) => showSplits(item))}
                     
                     <TextInput style={styles.textIn} placeholder='New Split Name' onChangeText={(input: string) => setNewSplitName(input)} value={newSplitName} />
                     <TextInput style={styles.textInDesc} multiline={true} placeholder='New Split Decsription' onChangeText={(input: string) => setNewDescription(input)} value={newDescription} />
                     
                     <TextInput style={styles.textIn} placeholder='New Split Day' onChangeText={(input: string) => setNewDayInSplit(input)} value={newDayInSplit} />
-                    <FlatList data={newSplitDays} renderItem={({item}) => showNewSplitDays(item)} />
+                    {newSplitDays.map((item) => showNewSplitDays(item))}
                     <Pressable style={styles.button} onPress={() => setNewSplitDays(newSplitDays.concat(newDayInSplit))}>
                       <Text style={styles.text}>Add Day</Text>
                     </Pressable>
@@ -103,15 +106,20 @@ const Splits = () => {
                     <Pressable style={styles.button} onPress={() => console.log("Create pressed")}>
                       <Text style={styles.text}>Create Split</Text>
                     </Pressable>
-                </View>
+                </ScrollView>
             )
         }
     }
 
       return (
+        /*<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            {visualComponents()}
+          </View>
+        </TouchableWithoutFeedback>*/
         <View style={styles.container}>
-          {visualComponents()}
-        </View>
+            {visualComponents()}
+          </View>
       )
 }
 

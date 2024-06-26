@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, createContext, Children } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
@@ -22,6 +22,15 @@ Amplify.configure(config);
 const AuthStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFF6EB'
+    //background: 'white'
+  },
+};
+
 const AuthNavigator = () => (
   <AuthStack.Navigator>
     <AuthStack.Screen name="Login" component={Login} />
@@ -32,7 +41,7 @@ const AuthNavigator = () => (
 );
 
 const MainNavigator = () => (
-  <MainStack.Navigator>
+  <MainStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#83B4FF' } }}>
     <MainStack.Screen name="Home" component={Home} />
     <MainStack.Screen name="Weight" component={Weight} />
     <MainStack.Screen name="Splits" component={Splits} />
@@ -63,8 +72,8 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
+    <NavigationContainer theme={MyTheme}>
+        {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

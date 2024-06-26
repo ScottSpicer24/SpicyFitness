@@ -1,10 +1,10 @@
 import { Platform, StyleSheet } from 'react-native'
 
 
-const sand_tan : string = '#FFF5E1'
-const light_blue : string = '#83B4FF'
-const steel_blue : string = '#5A72A0'
-const blue_black : string = '#1A2130'
+const bgColor : string = '#FFF6EB'
+const primary : string = '#5A72A0'
+const secondary : string = '#83B4FF'
+const tertiary : string = '#1A2130'
 /*
 Color Pallette: https://colorhunt.co/palettes/popular
 Sand tan: #FFF5E1 -- Background of app?
@@ -22,12 +22,13 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
       },
       card: { // style={[styles.card, styles.shadowProp]}
-        backgroundColor: light_blue,
+        backgroundColor: secondary,
         borderRadius: 8,
         paddingVertical: 65,
         paddingHorizontal: 20,
         width: '100%',
         marginVertical: 15,
+        alignItems: 'center',
       },
       boxShadow: { },
       textIn: { //style={styles.textIn}
@@ -40,54 +41,15 @@ export const styles = StyleSheet.create({
         marginTop: 10,
         backgroundColor: '#fff'
       },
-      textInDesc: { //style={styles.textInDesc}
-        textAlign: 'left',
-        textAlignVertical: 'top',
-        height: 100,
-        width: 250,
-        borderWidth: 1,
-        borderRadius: 4,
-        padding: 10,
-        marginBottom: 15,
-        marginTop: 3,
-        backgroundColor: '#fff'
-      },
       button: { // style={styles.button}
         alignItems: 'center',
-        justifyContent: 'center',
         paddingVertical: 10,
         paddingHorizontal: 32,
         margin: 20,
+        width: 200,
         borderRadius: 4,
         elevation: 3,
-        backgroundColor: blue_black,
-      },
-      text: { // style={styles.text}
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: sand_tan,
-      },
-      heading:{ // style={styles.heading}
-        justifyContent: 'center',
-        color: steel_blue,
-        fontWeight: 'bold',
-        fontSize: 15
-      },
-      headingSplits: {
-        color: steel_blue,
-        fontWeight: 'bold',
-        fontSize: 20,
-        textAlign: "center",
-        textDecorationLine: "underline",
-        margin: 10,
-        paddingTop: 10
-      },
-      textSplits: {
-        color: steel_blue,
-        fontWeight: 'bold',
-        fontSize: 15
+        backgroundColor: tertiary,
       },
       buttonSmall: { // style={styles.buttonSmall}
         alignItems: 'center',
@@ -98,6 +60,76 @@ export const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         backgroundColor: 'skyblue',
+      },
+      text: { // style={styles.text}
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: bgColor,
+      },
+      heading:{ // style={styles.heading}
+        justifyContent: 'center',
+        color: primary,
+        fontWeight: 'bold',
+        fontSize: 15
+      },
+      headingSplits: {
+        color: primary,
+        fontWeight: 'bold',
+        fontSize: 20,
+        textAlign: "center",
+        textDecorationLine: "underline",
+        margin: 10,
+        paddingTop: 10
+      },
+      mainTextSplits: {
+        color: primary,
+        fontWeight: 'bold',
+        fontSize: 15
+      },
+      mainTextInSplits: { // style={styles.buttonSmall}
+        height: 40,
+        width: 150,
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 10,
+        marginBottom: 15,
+        marginTop: 10,
+        backgroundColor: bgColor,
+        color: primary,
+      },
+      textInDescSplits: { //style={styles.textInDesc}
+        textAlign: 'left',
+        textAlignVertical: 'top',
+        height: 80,
+        width: 250,
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 10,
+        marginBottom: 15,
+        marginTop: 3,
+        backgroundColor: bgColor
+      },
+      splitRadioSelected: {
+        alignItems: 'center',
+        paddingHorizontal: 5,
+        paddingVertical: 5,
+        margin: 3,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: secondary,
+      },
+      splitRadioNot: {
+        alignItems: 'center',
+        paddingHorizontal: 5,
+        paddingVertical: 5,
+        margin: 3,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: bgColor,
+        borderColor: tertiary,
+        borderWidth: 1
       }
   });
 

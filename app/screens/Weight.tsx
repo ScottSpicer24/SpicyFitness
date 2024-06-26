@@ -59,8 +59,8 @@ const Weight = () => {
 
               <ScrollView>
                 {
-                  allWeights.map(item => (
-                    <View>
+                  allWeights.map((item, index) => (
+                    <View key={index}>
                       <Text style={styles.heading}>{item.date}  |  {item.weight} lbs</Text>
                     </View>
                   ))

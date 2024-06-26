@@ -1,7 +1,13 @@
 import { View, Text, ActivityIndicator, TouchableWithoutFeedback, Pressable, TextInput, ScrollView, Keyboard} from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { RadioButton} from 'react-native-paper';
 import { styles } from '../Styles'
 import { getSplitsAll, Return, SplitData, addSplitData } from '../functions/ExerciseFunctions'
+
+type KeySplitData = {
+  "key" : number,
+  "data" : SplitData
+}
 
 const Splits = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -11,6 +17,8 @@ const Splits = () => {
     const [newDescription, setNewDescription] = useState("")
     const [newSplitDays, setNewSplitDays] = useState<string[]>([])
     const [newDayInSplit, setNewDayInSplit] = useState("")
+    const [activeSplit, setActiveSplit] = useState(-1)
+    //const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         async function initializeInfo() {
@@ -36,25 +44,37 @@ const Splits = () => {
             because of the asynchronous nature or react native */
         const newEntries: SplitData[] = [];
         for (let i = 0; i < parsedBody.length; i++) {
-            const newEntry: SplitData = parsedBody[i];
-            newEntries.push(newEntry);
-        }
-        
+          const newEntry: SplitData = parsedBody[i];
+          newEntries.push(newEntry);
+        } 
         setSplitData(splitData.concat(newEntries));
     }
 
-    const showSplits = (item : SplitData) => {
-        return (
-            <View>
-                <Text style={styles.textSplits}>{item.splitName}</Text>
+    const showSplits = (item : SplitData, index : number) => {
+        if(item.active){
+          setActiveSplit(index)
+          return (
+            <Pressable key={index} style={styles.splitRadioSelected}>
+                <Text style={styles.mainTextSplits}>{item.splitName}</Text>
                 <Text style={{marginBottom: 10}}>{item.description}</Text>
-            </View>
+            </Pressable>
+          )
+        }
+        return (
+            <Pressable key={index} style={styles.splitRadioNot}>
+                <Text style={styles.mainTextSplits}>{item.splitName}</Text>
+                <Text style={{marginBottom: 10}}>{item.description}</Text>
+            </Pressable>
         )
     }
 
-    const showNewSplitDays = (item : string) => {
+    const updateActiveSplit = async () => {
+      //TODO
+    }
+
+    const showNewSplitDays = (item : string, index : number) => {
       return (
-          <View>
+          <View key={index}>
               <Text>{item}</Text>
           </View>
       )
@@ -73,39 +93,40 @@ const Splits = () => {
           return (
             <ScrollView>
                 <Text style={styles.headingSplits}>Your Splits</Text>
-                {splitData.map((item) => showSplits(item))}
+                {splitData.map((item, index) => showSplits(item, index))}
 
-                <Pressable style={styles.button} onPress={() => setShowAddSplit(true)}>
-                  <Text style={styles.text}>Add New</Text>
-                </Pressable>
+                <View style={{alignItems: "center"}}>
+                  <Pressable style={styles.button} onPress={() => setShowAddSplit(true)}>
+                    <Text style={styles.text}>Add New</Text>
+                  </Pressable>
+                </View>
+                
             </ScrollView>
           )
         }
-        /* 
-         <FlatList data={splitData} renderItem={({item}) => showSplits(item)} />
-         <ScrollView contentContainerStyle={{marginVertical: 20}}>
-          DOES NOT SCROLLL IF GOES OFF SCREEN
-          <ScrollView> is not supposed to be used with <FlatList> 
-          Used Map instead
-        */
         else{
             return(
                 <ScrollView>
                     <Text style={styles.headingSplits}>Your Splits</Text>
-                    {splitData.map((item) => showSplits(item))}
+                    {splitData.map((item, index) => showSplits(item, index))}
                     
-                    <TextInput style={styles.textIn} placeholder='New Split Name' onChangeText={(input: string) => setNewSplitName(input)} value={newSplitName} />
-                    <TextInput style={styles.textInDesc} multiline={true} placeholder='New Split Decsription' onChangeText={(input: string) => setNewDescription(input)} value={newDescription} />
-                    
-                    <TextInput style={styles.textIn} placeholder='New Split Day' onChangeText={(input: string) => setNewDayInSplit(input)} value={newDayInSplit} />
-                    {newSplitDays.map((item) => showNewSplitDays(item))}
-                    <Pressable style={styles.button} onPress={() => setNewSplitDays(newSplitDays.concat(newDayInSplit))}>
-                      <Text style={styles.text}>Add Day</Text>
-                    </Pressable>
+                    <View style={{alignItems: "center"}}>
+                      <TextInput style={styles.mainTextInSplits} autoFocus placeholder='New Split Name' onChangeText={(input: string) => setNewSplitName(input)} value={newSplitName} />
+                      <TextInput style={styles.textInDescSplits} multiline={true} placeholder='New Split Decsription' onChangeText={(input: string) => setNewDescription(input)} value={newDescription} />
+                      <TextInput style={styles.mainTextInSplits} placeholder='New Split Day' onChangeText={(input: string) => setNewDayInSplit(input)} value={newDayInSplit} />
+                      {newSplitDays.map((item, index) => showNewSplitDays(item, index))}
 
-                    <Pressable style={styles.button} onPress={() => console.log("Create pressed")}>
-                      <Text style={styles.text}>Create Split</Text>
-                    </Pressable>
+                      <Pressable style={styles.button} onPress={() => {
+                        setNewSplitDays(newSplitDays.concat(newDayInSplit))
+                        //setRefresh(!refresh)
+                      }}>
+                        <Text style={styles.text}>Add Day</Text>
+                      </Pressable>
+
+                      <Pressable style={styles.button} onPress={() => console.log("Create pressed")}>
+                        <Text style={styles.text}>Create Split</Text>
+                      </Pressable>
+                    </View> 
                 </ScrollView>
             )
         }

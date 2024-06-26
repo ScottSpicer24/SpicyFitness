@@ -73,11 +73,11 @@ const Home = ({navigation, route} : any) => {
             <Text style={styles.heading}>{username}</Text>
             
             <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
-              <Text style={styles.text}>{weight} pounds as of {weightDate} </Text>
+              <Text style={styles.text}>{weight} lbs on {weightDate} </Text>
             </Pressable>
 
             <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
-              <Text style={styles.text}>Add Lift (fix text not centered)</Text>
+              <Text style={styles.text}>Add Lift</Text>
             </Pressable>
             
             <Pressable style={styles.button} onPress={() => signOut()}>

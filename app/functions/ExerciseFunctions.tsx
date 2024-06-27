@@ -66,3 +66,33 @@ export async function addSplit(data : addSplitData) {
     response = await response.json();
     console.log("API call response: ", response);
 }
+
+export async function toggleActiveSplit(deactivateID : string, activateID : string){
+    const idToken = await getIDToken()
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/toggle-active-split"
+    const data = {
+        "deactivate": deactivateID,
+        "activate": activateID
+    }
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${idToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        if (!apiResp.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const resp : Return = await apiResp.json();
+        return resp.statusCode
+    }
+    catch (error){
+        console.error('Error fetching Splits:', error);
+        throw error;
+    } 
+}

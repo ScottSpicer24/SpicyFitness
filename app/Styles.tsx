@@ -88,8 +88,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 15
       },
-      mainTextInSplits: { // style={styles.buttonSmall}
-        height: 40,
+      mainTextInSplits: { // style={styles.mainTextSplits}
         width: 150,
         borderWidth: 1,
         borderRadius: 4,
@@ -98,6 +97,11 @@ export const styles = StyleSheet.create({
         marginTop: 10,
         backgroundColor: bgColor,
         color: primary,
+      },
+      mainTextSplitsSelected: { // style={styles.mainTextSplitsSelected}
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: tertiary
       },
       textInDescSplits: { //style={styles.textInDesc}
         textAlign: 'left',

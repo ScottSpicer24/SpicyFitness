@@ -1,13 +1,8 @@
-import { View, Text, ActivityIndicator, TouchableWithoutFeedback, Pressable, TextInput, ScrollView, Keyboard} from 'react-native'
+import { View, Text, ActivityIndicator, Alert, Pressable, TextInput, ScrollView, Keyboard} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { RadioButton} from 'react-native-paper';
 import { styles } from '../Styles'
-import { getSplitsAll, Return, SplitData, addSplitData } from '../functions/ExerciseFunctions'
+import { getSplitsAll, Return, SplitData, addSplitData, toggleActiveSplit } from '../functions/ExerciseFunctions'
 
-type KeySplitData = {
-  "key" : number,
-  "data" : SplitData
-}
 
 const Splits = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -18,11 +13,12 @@ const Splits = () => {
     const [newSplitDays, setNewSplitDays] = useState<string[]>([])
     const [newDayInSplit, setNewDayInSplit] = useState("")
     const [activeSplit, setActiveSplit] = useState(-1)
-    //const [refresh, setRefresh] = useState(false)
+    const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         async function initializeInfo() {
             try{
+              console.log("useEffect called")
               const resp = await getSplitsAll()
               const parsedBody = await JSON.parse(resp.body)
 
@@ -37,45 +33,64 @@ const Splits = () => {
           }
           initializeInfo()
            
-    }, [])
+    }, [refresh])
     
     async function fillSplitsArray(parsedBody : any) {
         /* DO NOT setState for each component. Causes issues 
             because of the asynchronous nature or react native */
-        const newEntries: SplitData[] = [];
+        let newEntries: SplitData[] = []
+        let activeVal: number = -1
         for (let i = 0; i < parsedBody.length; i++) {
           const newEntry: SplitData = parsedBody[i];
+          if(newEntry.active){
+            activeVal = i;
+          }
           newEntries.push(newEntry);
         } 
         setSplitData(splitData.concat(newEntries));
+        setActiveSplit(activeVal)
     }
 
     const showSplits = (item : SplitData, index : number) => {
         if(item.active){
-          setActiveSplit(index)
           return (
             <Pressable key={index} style={styles.splitRadioSelected}>
-                <Text style={styles.mainTextSplits}>{item.splitName}</Text>
-                <Text style={{marginBottom: 10}}>{item.description}</Text>
+              <Text style={styles.mainTextSplitsSelected}>{item.splitName}</Text>
+              <Text style={{marginBottom: 10}}>{item.description}</Text>
             </Pressable>
           )
         }
-        return (
-            <Pressable key={index} style={styles.splitRadioNot}>
-                <Text style={styles.mainTextSplits}>{item.splitName}</Text>
-                <Text style={{marginBottom: 10}}>{item.description}</Text>
+        else{
+          return (
+            <Pressable key={index} style={styles.splitRadioNot} onPress= {() => updateActiveSplit(index)}>
+              <Text style={styles.mainTextSplits}>{item.splitName}</Text>
+              <Text style={{marginBottom: 10}}>{item.description}</Text>
             </Pressable>
-        )
+          )
+        } 
     }
 
-    const updateActiveSplit = async () => {
-      //TODO
+    const updateActiveSplit = async (acivateIndex : number) => {
+      const deactivateID = splitData[activeSplit].splitID
+      const activateID = splitData[acivateIndex].splitID
+      const res = await toggleActiveSplit(deactivateID, activateID)
+      console.log(res)
+      if(res === 200){
+        splitData[activeSplit].active = false
+        splitData[acivateIndex].active = true
+        await setActiveSplit(acivateIndex) 
+        console.log(splitData)
+      }
+      else{
+        const error_message: string = "An error occured switching active split. Active split not changed"
+        Alert.alert('Error', error_message, [{ text: 'Close', onPress: () => console.log('Cancel Pressed') }]);
+      }
     }
 
     const showNewSplitDays = (item : string, index : number) => {
       return (
           <View key={index}>
-              <Text>{item}</Text>
+            <Text>{item}</Text>
           </View>
       )
   }
@@ -133,14 +148,9 @@ const Splits = () => {
     }
 
       return (
-        /*<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-            {visualComponents()}
-          </View>
-        </TouchableWithoutFeedback>*/
         <View style={styles.container}>
             {visualComponents()}
-          </View>
+        </View>
       )
 }
 

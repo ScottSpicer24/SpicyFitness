@@ -54,17 +54,28 @@ export async function addSplit(data : addSplitData) {
         
     const idToken = await getIDToken()
 
-    let response = await fetch(url, {
-        method: "POST",
-        headers: {
-            'Authorization' : `Bearer ${idToken}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
+    try{
+        let response = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Authorization' : `Bearer ${idToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const resp: Return = await response.json()
+        console.log("API call response: ", response);
 
-    response = await response.json();
-    console.log("API call response: ", response);
+        return resp.statusCode
+    }
+    catch (error){
+        console.error('Error fetching Splits:', error);
+        throw error;
+    } 
+
 }
 
 export async function toggleActiveSplit(deactivateID : string, activateID : string){

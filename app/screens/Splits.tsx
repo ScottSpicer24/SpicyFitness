@@ -1,7 +1,8 @@
 import { View, Text, ActivityIndicator, Alert, Pressable, TextInput, ScrollView, Keyboard} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { styles } from '../Styles'
-import { getSplitsAll, Return, SplitData, addSplitData, toggleActiveSplit } from '../functions/ExerciseFunctions'
+import { getSplitsAll, Return, SplitData, addSplitData, toggleActiveSplit, addSplit } from '../functions/ExerciseFunctions'
+import { getCurrentUser } from 'aws-amplify/auth';
 
 
 const Splits = () => {
@@ -13,7 +14,7 @@ const Splits = () => {
     const [newSplitDays, setNewSplitDays] = useState<string[]>([])
     const [newDayInSplit, setNewDayInSplit] = useState("")
     const [activeSplit, setActiveSplit] = useState(-1)
-    const [refresh, setRefresh] = useState(false)
+    //const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         async function initializeInfo() {
@@ -23,8 +24,9 @@ const Splits = () => {
               const parsedBody = await JSON.parse(resp.body)
 
               if(splitData[0] === undefined){
-                  await fillSplitsArray(parsedBody)
+                await fillSplitsArray(parsedBody)
               }
+              
               setIsLoading(false);
             }
             catch{
@@ -33,7 +35,7 @@ const Splits = () => {
           }
           initializeInfo()
            
-    }, [refresh])
+    }, [])
     
     async function fillSplitsArray(parsedBody : any) {
         /* DO NOT setState for each component. Causes issues 
@@ -49,6 +51,13 @@ const Splits = () => {
         } 
         setSplitData(splitData.concat(newEntries));
         setActiveSplit(activeVal)
+    }
+
+    async function resetSplitsArray() {
+      await setSplitData([])
+      const resp = await getSplitsAll()
+      const parsedBody = await JSON.parse(resp.body)
+      await fillSplitsArray(parsedBody)  
     }
 
     const showSplits = (item : SplitData, index : number) => {
@@ -74,12 +83,11 @@ const Splits = () => {
       const deactivateID = splitData[activeSplit].splitID
       const activateID = splitData[acivateIndex].splitID
       const res = await toggleActiveSplit(deactivateID, activateID)
-      console.log(res)
+      console.log("Toggle active split response: ", res)
       if(res === 200){
         splitData[activeSplit].active = false
         splitData[acivateIndex].active = true
         await setActiveSplit(acivateIndex) 
-        console.log(splitData)
       }
       else{
         const error_message: string = "An error occured switching active split. Active split not changed"
@@ -94,6 +102,29 @@ const Splits = () => {
           </View>
       )
   }
+
+    const createSplit = async () => {
+      const resp= await getCurrentUser()
+      const userID = resp.userId
+      
+      const data: addSplitData= {
+        "userID" : userID,
+        "splitName" : newSplitName,
+        "description" : newDescription,
+        "splitDays" : newSplitDays
+      }
+
+      const res = await addSplit(data)
+      if(res === 200){
+        //resetSplitsArray()
+        setShowAddSplit(!showAddSplit)
+        setNewSplitName("")
+        setNewDescription("")
+        setNewDayInSplit("")
+        setNewSplitDays([])
+      }
+
+    }
 
     const visualComponents = () => {
         if(isLoading){
@@ -138,7 +169,7 @@ const Splits = () => {
                         <Text style={styles.text}>Add Day</Text>
                       </Pressable>
 
-                      <Pressable style={styles.button} onPress={() => console.log("Create pressed")}>
+                      <Pressable style={styles.button} onPress={() => createSplit()}>
                         <Text style={styles.text}>Create Split</Text>
                       </Pressable>
                     </View> 

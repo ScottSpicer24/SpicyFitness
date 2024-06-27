@@ -113,7 +113,8 @@ export const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 15,
         marginTop: 3,
-        backgroundColor: bgColor
+        backgroundColor: bgColor,
+        color: primary
       },
       splitRadioSelected: {
         alignItems: 'center',

@@ -75,7 +75,7 @@ export default function App() {
 
   return (
     <NavigationContainer theme={MyTheme}>
-        {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
+      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

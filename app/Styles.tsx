@@ -30,6 +30,19 @@ export const styles = StyleSheet.create({
         marginVertical: 15,
         alignItems: 'center',
       },
+      cardHalf: { // style={[styles.card, styles.shadowProp]}
+        backgroundColor: secondary,
+        borderRadius: 8,
+        paddingVertical: 65,
+        paddingHorizontal: 20,
+        width: '45.5%',
+        marginVertical: 15,
+        marginHorizontal: 15,
+        alignItems: 'center',
+      },
+      smallCardHolder: { // style={styles.smallCardHolder}
+        flexDirection : 'row',
+      },
       boxShadow: { },
       textIn: { //style={styles.textIn}
         height: 40,

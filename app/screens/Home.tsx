@@ -72,17 +72,33 @@ const Home = ({navigation, route} : any) => {
           <View style={styles.form}>
             <Text style={styles.heading}>{username}</Text>
             
-            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => weightButton()}>
-              <Text style={styles.text}>{weight} lbs on {weightDate} </Text>
-            </Pressable>
+            <View style={styles.smallCardHolder}>
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => weightButton()}>
+                <Text style={styles.text}>{weight} lbs</Text>
+              </Pressable>
+
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => console.log("day")}>
+                <Text style={styles.text}>Quick Start</Text>
+              </Pressable>
+            </View>
+            
 
             <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout")}>
               <Text style={styles.text}>Add Lift</Text>
             </Pressable>
             
-            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
-              <Text style={styles.text}>Edit Splits</Text>
-            </Pressable>
+            <View style={styles.smallCardHolder}>
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
+                <Text style={styles.text}>Edit Splits</Text>
+              </Pressable>
+
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => console.log("day")}>
+                <Text style={styles.text}>Edit Day</Text>
+              </Pressable>
+            </View>
+            
+            
+            
             
             <Pressable style={styles.button} onPress={() => signOut()}>
               <Text style={styles.text}>Sign Out</Text>

@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
       },
       card: { // style={[styles.card, styles.shadowProp]}
-        backgroundColor: secondary,
+        backgroundColor: secondary, //primary
         borderRadius: 8,
         paddingVertical: 65,
         paddingHorizontal: 20,

@@ -1,30 +1,44 @@
 import { Text, View, ActivityIndicator, Pressable} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { signOut, fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
-import { getIDToken, getCurrentUserID } from '../functions/AuthFunctions';
+import { signOut, getCurrentUser } from 'aws-amplify/auth';
+import { getIDToken } from '../functions/AuthFunctions';
 import { styles, generateBoxShadowStyle } from '../Styles';
 import { getCurrentWeight, WeightReturn} from '../functions/WeightFunctions';
+import { getActiveSplit, Return, SplitData } from '../functions/ExerciseFunctions';
 
+/*TODO:
+- display the active split name on the edit day and add lift pressable,
+- have sign out button confirm then return to login screen stack. 
+
+*/
 
 const Home = ({navigation, route} : any) => {
     const [username, setUsername] = useState("")
     const [weight, setWeight] = useState("")
     const [weightDate, setWeightDate] = useState("")
     const [isLoading, setIsLoading] = useState(true)
+    const [activeSplit, setActiveSplit] = useState<SplitData>()
     //const [err, setErr] = useState(false)
 
       useEffect(() => {
         getUsersName();
         generateBoxShadowStyle();
         
-        async function initializeWeightInfo() {
+        async function initializeInfo() {
+          //Iniitalize weight info
           const res = await getCurrentWeight();
           await setWeight(res.body.weight);
           await setWeightDate(res.body.date);
-          console.log("Initial weight and date: ", res.body);
+
+
+          const splitRes: Return = await getActiveSplit()
+          if(splitRes.statusCode === 200){
+            const parsedBody : SplitData = JSON.parse(splitRes.body)
+            setActiveSplit(parsedBody)
+          }
           setIsLoading(false);
         }
-        initializeWeightInfo();
+        initializeInfo();
       }, [])
 
       async function getUsersName(){
@@ -64,7 +78,6 @@ const Home = ({navigation, route} : any) => {
             <View style={styles.form}>
               <ActivityIndicator style={{ padding: 100 }} size="large" color="blue"/>
             </View>
-            
           )
         }
         else{
@@ -77,23 +90,22 @@ const Home = ({navigation, route} : any) => {
                 <Text style={styles.text}>{weight} lbs</Text>
               </Pressable>
 
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => console.log("day")}>
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Workout")}>
                 <Text style={styles.text}>Quick Start</Text>
               </Pressable>
             </View>
             
-
             <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout")}>
-              <Text style={styles.text}>Add Lift</Text>
+              <Text style={styles.text}>Start Workout</Text>
             </Pressable>
             
             <View style={styles.smallCardHolder}>
               <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
-                <Text style={styles.text}>Edit Splits</Text>
+                <Text style={styles.text}>Manage Splits</Text>
               </Pressable>
 
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => console.log("day")}>
-                <Text style={styles.text}>Edit Day</Text>
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("EditSplit", {Split: activeSplit})}>
+                <Text style={styles.text}>Edit {activeSplit?.splitName}</Text>
               </Pressable>
             </View>
             

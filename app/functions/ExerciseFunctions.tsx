@@ -16,6 +16,14 @@ export type SplitData = {
     "userID" : string
 }
 
+export type SplitDayData = {
+    "splitDayID" : string,
+    "splitDayName" : string,
+    "exercises" : string[],
+    "splitID" : string,
+    "workouts" : string[],
+}
+
 export type addSplitData = {
     "userID" : string,
     "splitName" : string,
@@ -122,6 +130,31 @@ export async function getActiveSplit(){
             }
         })
         if (!apiResp.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data : Return = await apiResp.json();
+        return data
+    }
+    catch (error){
+        console.error('Error fetching Active Splits:', error);
+        throw error;
+    }    
+}
+
+export async function getSplitDay(splitDayID : string){
+    const idToken = await getIDToken()
+    
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/split-day?splitDayID=" + splitDayID
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}`
+            }
+        })
+        if (!apiResp.ok) {
+            console.log(apiResp);
             throw new Error('Network response was not ok');
         }
         const data : Return = await apiResp.json();

@@ -19,6 +19,13 @@ import Splits from './app/screens/Splits';
 import Workout from './app/screens/Workout';
 import EditSplit from './app/screens/EditSplit';
 
+/*TODO:
+- after login is pressed stack does not switch
+*/
+
+
+
+
 Amplify.configure(config);
 
 const AuthStack = createNativeStackNavigator();

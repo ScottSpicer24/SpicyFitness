@@ -1,4 +1,4 @@
-import { Text, View, ActivityIndicator, Pressable} from 'react-native'
+import { Text, View, ActivityIndicator, Pressable, Button} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { signOut, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken } from '../functions/AuthFunctions';
@@ -7,9 +7,9 @@ import { getCurrentWeight, WeightReturn} from '../functions/WeightFunctions';
 import { getActiveSplit, Return, SplitData } from '../functions/ExerciseFunctions';
 
 /*TODO:
-- display the active split name on the edit day and add lift pressable,
 - have sign out button confirm then return to login screen stack. 
-
+- create the quick start split data
+- NOT refreshing the bottom right button when acrive split is changed
 */
 
 const Home = ({navigation, route} : any) => {
@@ -18,7 +18,8 @@ const Home = ({navigation, route} : any) => {
     const [weightDate, setWeightDate] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [activeSplit, setActiveSplit] = useState<SplitData>()
-    //const [err, setErr] = useState(false)
+    const [err, setErr] = useState(false)
+    const [refresh, setRefresh] = useState(false)
 
       useEffect(() => {
         getUsersName();
@@ -27,6 +28,11 @@ const Home = ({navigation, route} : any) => {
         async function initializeInfo() {
           //Iniitalize weight info
           const res = await getCurrentWeight();
+          console.log(res)
+          if(res.statusCode !== 200){
+            setErr(true)
+          }
+          else{setErr(false)}
           await setWeight(res.body.weight);
           await setWeightDate(res.body.date);
 
@@ -39,7 +45,7 @@ const Home = ({navigation, route} : any) => {
           setIsLoading(false);
         }
         initializeInfo();
-      }, [])
+      }, [refresh])
 
       async function getUsersName(){
           const resp = await getCurrentUser()
@@ -80,6 +86,19 @@ const Home = ({navigation, route} : any) => {
             </View>
           )
         }
+        else if(err){
+          return(
+            <View style={styles.form}>
+              <Text style={styles.heading}>Error loading page.</Text>
+              <Pressable style={styles.button} onPress={() => setRefresh(!refresh)}>
+                <Text style={styles.text}>Refresh</Text>
+              </Pressable>
+              <Pressable style={styles.button} onPress={() => signOut()}>
+                <Text style={styles.text}>Sign Out</Text>
+              </Pressable>
+            </View>
+          )
+        }
         else{
           return (
           <View style={styles.form}>
@@ -95,7 +114,7 @@ const Home = ({navigation, route} : any) => {
               </Pressable>
             </View>
             
-            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout")}>
+            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout", {Split: activeSplit})}>
               <Text style={styles.text}>Start Workout</Text>
             </Pressable>
             

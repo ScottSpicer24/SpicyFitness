@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
       boxShadow: { },
       textIn: { //style={styles.textIn}
         height: 40,
-        width: 150,
+        width: 250,
         borderWidth: 1,
         borderRadius: 4,
         padding: 10,

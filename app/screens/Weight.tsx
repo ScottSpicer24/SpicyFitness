@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { styles } from '../Styles';
 import { getCurrentWeight, postWeight, WeightReturn, getAllWeights} from '../functions/WeightFunctions';
 
+/* 
+- style Weight log
+*/
+
 const Weight = () => {
     const [weight, setWeight] = useState("")
     const [weightDate, setWeightDate] = useState("")

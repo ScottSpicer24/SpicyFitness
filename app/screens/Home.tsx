@@ -18,6 +18,7 @@ const Home = ({navigation, route} : any) => {
     const [weightDate, setWeightDate] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [activeSplit, setActiveSplit] = useState<SplitData>()
+    const [activeSplitDay, setActiveSplitDay] = useState("")
     const [err, setErr] = useState(false)
     const [refresh, setRefresh] = useState(false)
 
@@ -36,16 +37,32 @@ const Home = ({navigation, route} : any) => {
           await setWeight(res.body.weight);
           await setWeightDate(res.body.date);
 
-
           const splitRes: Return = await getActiveSplit()
           if(splitRes.statusCode === 200){
             const parsedBody : SplitData = JSON.parse(splitRes.body)
-            setActiveSplit(parsedBody)
+            await setActiveSplit(parsedBody)
           }
+
           setIsLoading(false);
+          console.log(activeSplitDay)
+          console.log(activeSplit)
         }
         initializeInfo();
       }, [refresh])
+
+
+      useEffect(() => {
+        if(activeSplitDay === "" && activeSplit !== undefined){
+          const len = activeSplit.splitDays.length
+          for (let i = 0; i < len; i++){
+            if(activeSplit.splitDays[i].active){
+              setActiveSplitDay(activeSplit.splitDays[i].splitDayID.replace(/^"|"$/g, ''))
+              
+              break
+            }
+          }
+        }
+      }, [activeSplit]);
 
       async function getUsersName(){
           const resp = await getCurrentUser()
@@ -114,7 +131,7 @@ const Home = ({navigation, route} : any) => {
               </Pressable>
             </View>
             
-            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout", {Split: activeSplit})}>
+            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout", {SplitDay: activeSplitDay})}>
               <Text style={styles.text}>Start Workout</Text>
             </Pressable>
             

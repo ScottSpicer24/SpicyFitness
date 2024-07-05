@@ -11,6 +11,7 @@ import { getCurrentUser } from 'aws-amplify/auth';
 - if not split day added need to create a single dat for them, or not allow it to be created
 - edit splits feature
 - delete splits feature
+- visual to confirm that new split was added
 */ 
 
 const Splits = () => {

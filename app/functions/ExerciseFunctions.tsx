@@ -10,7 +10,10 @@ export type Return = {
 export type SplitData = {
     "active" : boolean,
     "description" : string,
-    "splitDayID" : string[],
+    "splitDays" : {
+        "splitDayID" : string,
+        "active" : boolean
+    }[],
     "splitID" : string,
     "splitName" : string,
     "userID" : string

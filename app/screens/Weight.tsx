@@ -5,6 +5,7 @@ import { getCurrentWeight, postWeight, WeightReturn, getAllWeights} from '../fun
 
 /* 
 - style Weight log
+- graph the weights
 */
 
 const Weight = () => {
@@ -20,12 +21,13 @@ const Weight = () => {
           const res = await getCurrentWeight();
           setWeight(res.body.weight);
           setWeightDate(res.body.date);
-          console.log("Initial weight and date: ", res.body);
+          //console.log("Initial weight and date: ", res.body);
 
           const arr = await getAllWeights();
           const list = await JSON.parse(arr.body);
-          setAllWeights(list);
-          console.log("Initial weight array: ", allWeights);
+          setAllWeights(list.reverse());
+
+          //console.log("Initial weight array: ", allWeights);
         }
         initializeWeightInfo();
 
@@ -36,7 +38,7 @@ const Weight = () => {
         await postWeight(weight);
         await setRefresh(!refresh);
       }
-      
+
       const visualComponents = () => {
         if(isLoading){
           return (
@@ -48,6 +50,7 @@ const Weight = () => {
         }
         else{
           return (
+            <ScrollView>
             <View style={styles.form}>
               <Text style={styles.heading}>Weight: {weight}</Text>
               <Text style={styles.heading}>---</Text>
@@ -61,17 +64,18 @@ const Weight = () => {
               </Pressable>
 
 
-              <ScrollView>
-                {
+              <View>
+                {               
                   allWeights.map((item, index) => (
                     <View key={index}>
-                      <Text style={styles.heading}>{item.date}  |  {item.weight} lbs</Text>
+                      <Text style={styles.heading}>| {item.date}  |  {item.weight} lbs |</Text>
+                      <Text style={styles.heading}>-----------------------------</Text>
                     </View>
                   ))
                 }
-              </ScrollView>
+              </View>
             </View>
-            
+            </ScrollView>
           )
         }
       }

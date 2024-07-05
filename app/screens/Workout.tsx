@@ -1,18 +1,29 @@
 import { View, Text, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { SplitData } from '../functions/ExerciseFunctions'
+import { SplitData, SplitDayData, getSplitDay } from '../functions/ExerciseFunctions'
 import { styles } from '../Styles'
 
 const Workout = ({navigation, route} : any) => {
-    const split : SplitData = route.params.Split
+    const splitDay : string = route.params.SplitDay
     const [isLoading, setIsLoading] = useState(true)
+    const [splitDayData, setSplitDayData] = useState<SplitDayDay>()
+    
 
     useEffect(() => {
-        //todo
-        console.log(split)
-        setIsLoading(false)
-    }
-    )
+        async function initializeInfo(){
+            try{
+                const resp = await getSplitDay(splitDay)
+                const data = await JSON.parse(resp.body)
+                setSplitDayData(data)
+            }
+            catch (error) {
+                console.error('Error initializing info:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        initializeInfo()
+    }, [])
 
     
 
@@ -28,7 +39,7 @@ const Workout = ({navigation, route} : any) => {
         else{
             return(
                 <View style={styles.form}>
-                    <Text style={styles.heading}>Workout: {split.splitName}</Text>
+                    <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
                 </View>
             )
         }

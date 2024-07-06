@@ -87,6 +87,12 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 15
       },
+      headingLight:{ // style={styles.headingDark}
+        justifyContent: 'center',
+        color: secondary,
+        fontWeight: 'bold',
+        fontSize: 15
+      },
       headingSplits: {
         color: primary,
         fontWeight: 'bold',

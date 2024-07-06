@@ -7,6 +7,11 @@ export type Return = {
     body : string
 }
 
+export type WorkoutReturn = {
+    statusCode : number,
+    body : ExerData[]
+}
+
 export type SplitData = {
     "active" : boolean,
     "description" : string,
@@ -32,6 +37,20 @@ export type addSplitData = {
     "splitName" : string,
     "description" : string,
     "splitDays" : string[]
+}
+
+export type ExerData = {
+    "ExerciseID" : string,
+    "exerciseName" : string,
+    "info" : {
+        "date" : string,
+        "workoutID": string,
+        "reps" : string[],
+        "notes" : string,
+        "sets" : number,
+        "resistance" : number
+    },
+    "userID" : string
 }
 
 
@@ -168,3 +187,29 @@ export async function getSplitDay(splitDayID : string){
         throw error;
     }    
 }
+
+export async function getLastWorkout(workoutID : string){
+    const idToken = await getIDToken()
+    
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/workout-info?workoutID=" + workoutID
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}`
+            }
+        })
+        if (!apiResp.ok) {
+            console.log(apiResp);
+            throw new Error('Network response was not ok');
+        }
+        const data : WorkoutReturn = await apiResp.json();
+        return data
+    }
+    catch (error){
+        console.error('Error fetching workout:', error);
+        throw error;
+    }  
+}
+

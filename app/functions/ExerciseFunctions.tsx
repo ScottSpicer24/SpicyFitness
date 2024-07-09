@@ -49,7 +49,7 @@ export type ExerData = {
         "notes" : string,
         "sets" : number,
         "resistance" : number
-    },
+    }[],
     "userID" : string
 }
 

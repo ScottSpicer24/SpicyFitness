@@ -20,18 +20,23 @@ const Workout = ({navigation, route} : any) => {
     useEffect(() => {
         async function initializeInfo(){
             try{
+                setIsErr(false)
                 const resp = await getSplitDay(splitDay)
                 //if you can get splitday
                 if(resp.statusCode === 200){
                     //prepare split day data
                     const data = await JSON.parse(resp.body)
-                    await setSplitDayData(data)
-                    const len = splitDayData.workouts.length
-                    const prevWorkoutID =  splitDayData.workouts[len - 1]
+                    setSplitDayData(data)
+
+                    //DO NOT use splitDayData bc os async nature it does not update in time
+                    const len = data.workouts.length
+                    const prevWorkoutID = data.workouts[len - 1]
                     
                     // get and prepare workout exercise data
                     const res : WorkoutReturn = await getLastWorkout(prevWorkoutID)
+                    console.log(res.statusCode)
                     if(res.statusCode === 200){
+                        //console.log(res.body[0].info)
                         setPrevWorkout(res.body)
                     }
                     else{
@@ -51,8 +56,16 @@ const Workout = ({navigation, route} : any) => {
         initializeInfo()
     }, [])
 
-    const exerciseContainer = () => {
-        //todo
+    const exerciseContainer = (item: ExerData, index: number) => {
+        const lastData = item.info[item.info.length - 1]
+        
+        return(
+            <View key={index}>
+                <Text style={styles.heading}>{index + 1}. {item.exerciseName} {lastData.resistance}lbs {lastData.sets}x{lastData.reps[0]}</Text>
+                <Text style={styles.heading}>{lastData.notes}</Text>
+            </View>
+        )
+        
     }
 
     const visualComponents = () => {
@@ -64,10 +77,19 @@ const Workout = ({navigation, route} : any) => {
             )
             
         }
+        else if(isErr){
+            return(
+                <Text style={styles.heading}>Error Loading Data</Text>
+            )
+        }
         else{
             return(
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
+
+                    <View>
+                        {prevWorkout.map((item, index) => (exerciseContainer(item, index)))}
+                    </View>
                 </View>
             )
         }

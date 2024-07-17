@@ -30,6 +30,51 @@ export const styles = StyleSheet.create({
         marginVertical: 15,
         alignItems: 'center',
       },
+      exerContainerUnpressed: { // style={styles.exerContainerUnpressed}
+        backgroundColor: secondary,
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 0,
+        width: '100%',
+        marginVertical: 5,
+        marginHorizontal: 0,
+        alignItems: 'center',
+      },
+      exerContainerPressed: { // style={[styles.exerContainerPressed, styles.shadowProp]}
+        backgroundColor: bgColor,
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 0,
+        width: '100%',
+        marginVertical: 5,
+        marginHorizontal: 0,
+        alignItems: 'center',
+      },
+      rowExer: {
+        flexDirection: 'row',
+        width: '100%',
+        marginVertical: 5,
+      },
+      textInputExer: {
+        borderWidth: 1,
+        borderColor: tertiary,
+        padding: 8,
+        marginHorizontal: 5,
+        borderRadius: 4,
+      },
+      firstInputExer: {
+        flex: 10,
+      },
+      resistInputExer: {
+        flex: 2,
+      },
+      repInputExer: {
+        flex: 1,
+      },
+      fullWidthInputExer: {
+        flex: 1,
+        width: '100%',
+      },
       cardHalf: { // style={[styles.card, styles.shadowProp]}
         backgroundColor: secondary,
         borderRadius: 8,

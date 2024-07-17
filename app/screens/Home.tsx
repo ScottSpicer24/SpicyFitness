@@ -1,4 +1,4 @@
-import { Text, View, ActivityIndicator, Pressable, Button} from 'react-native'
+import { Text, View, ActivityIndicator, Pressable, Button, Alert} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { signOut, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken } from '../functions/AuthFunctions';
@@ -56,7 +56,7 @@ const Home = ({navigation, route} : any) => {
           const len = activeSplit.splitDays.length
           for (let i = 0; i < len; i++){
             if(activeSplit.splitDays[i].active){
-              setActiveSplitDay(activeSplit.splitDays[i].splitDayID.replace(/^"|"$/g, ''))
+              setActiveSplitDay(activeSplit.splitDays[i].splitDayID.replace(/^"|"$/g, '')) // removes extra "'s
               
               break
             }
@@ -126,7 +126,7 @@ const Home = ({navigation, route} : any) => {
                 <Text style={styles.text}>{weight} lbs</Text>
               </Pressable>
 
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Workout")}>
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => /*navigation.navigate("Workout")*/Alert.alert('Sorry', 'feature pending, please use start workout instead.', [{text: 'Close', onPress: () => console.log('Closed Pressed')}])}>
                 <Text style={styles.text}>Quick Start</Text>
               </Pressable>
             </View>

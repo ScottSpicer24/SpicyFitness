@@ -1,7 +1,7 @@
-import { View, Text, ActivityIndicator, Pressable } from 'react-native'
+import { View, Text, ActivityIndicator, Pressable, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { ExerData, SplitData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
-import { styles } from '../Styles'
+import { styles, generateBoxShadowStyle } from '../Styles';
 
 const Workout = ({navigation, route} : any) => {
     const splitDay : string = route.params.SplitDay
@@ -15,12 +15,14 @@ const Workout = ({navigation, route} : any) => {
         "workouts" : [],
     })
     const [prevWorkout, setPrevWorkout] = useState<ExerData[]>([])
+    const [pressedIndex, setPressedIndex] = useState(0)
     
 
     useEffect(() => {
         async function initializeInfo(){
             try{
                 setIsErr(false)
+                generateBoxShadowStyle();
                 const resp = await getSplitDay(splitDay)
                 //if you can get splitday
                 if(resp.statusCode === 200){
@@ -59,12 +61,30 @@ const Workout = ({navigation, route} : any) => {
     const exerciseContainer = (item: ExerData, index: number) => {
         const lastData = item.info[item.info.length - 1]
         
-        return(
-            <View key={index}>
-                <Text style={styles.heading}>{index + 1}. {item.exerciseName} {lastData.resistance}lbs {lastData.sets}x{lastData.reps[0]}</Text>
-                <Text style={styles.heading}>{lastData.notes}</Text>
-            </View>
-        )
+        if(index !== pressedIndex){
+            return(
+                <Pressable key={index} style={[styles.exerContainerUnpressed, styles.boxShadow]} onPress= {() => setPressedIndex(index)}>
+                    <Text style={styles.text}>{item.exerciseName} {lastData.resistance}lbs {lastData.sets}x{lastData.reps[0]}</Text>
+                    <Text style={styles.text}>{lastData.notes}</Text>
+                </Pressable>   
+            )
+        }
+        else{
+            return(
+                <Pressable key={index} style={[styles.exerContainerPressed]} onPress= {() => setPressedIndex(index)}>
+                    <View style={styles.rowExer}>
+                        <TextInput style={[styles.textInputExer, styles.firstInputExer]} placeholder={item.exerciseName} />
+                        <TextInput style={[styles.textInputExer, styles.resistInputExer]} maxLength={4} placeholder={lastData.resistance.toString()} />
+                        <TextInput style={[styles.textInputExer, styles.repInputExer]} maxLength={2} placeholder={lastData.reps[0]} />
+                        <TextInput style={[styles.textInputExer, styles.repInputExer]} maxLength={2}placeholder={lastData.reps[0]} />
+                        <TextInput style={[styles.textInputExer, styles.repInputExer]} maxLength={2} placeholder={lastData.reps[0]} />
+                    </View>
+                    <View style={styles.rowExer}>
+                        <TextInput style={[styles.textInputExer, styles.fullWidthInputExer]} placeholder={lastData.notes} />
+                    </View>
+                </Pressable>
+            )
+        }
         
     }
 
@@ -86,10 +106,7 @@ const Workout = ({navigation, route} : any) => {
             return(
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
-
-                    <View>
-                        {prevWorkout.map((item, index) => (exerciseContainer(item, index)))}
-                    </View>
+                    {prevWorkout.map((item, index) => (exerciseContainer(item, index)))}
                 </View>
             )
         }

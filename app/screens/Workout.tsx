@@ -64,8 +64,13 @@ const Workout = ({navigation, route} : any) => {
         if(index !== pressedIndex){
             return(
                 <Pressable key={index} style={[styles.exerContainerUnpressed, styles.boxShadow]} onPress= {() => setPressedIndex(index)}>
-                    <Text style={styles.text}>{item.exerciseName} {lastData.resistance}lbs {lastData.sets}x{lastData.reps[0]}</Text>
-                    <Text style={styles.text}>{lastData.notes}</Text>
+                    <View style={[styles.rowExer]}>
+                        <Text style={[styles.textExer, styles.firstTextExer]}>{item.exerciseName}</Text>
+                        <Text style={[styles.textExer, styles.resistTextExer]}>{lastData.resistance} lbs</Text>
+                        <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[0]}</Text>
+                        <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[1]}</Text>
+                        <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[2]}</Text> 
+                    </View>
                 </Pressable>   
             )
         }
@@ -74,10 +79,10 @@ const Workout = ({navigation, route} : any) => {
                 <Pressable key={index} style={[styles.exerContainerPressed]} onPress= {() => setPressedIndex(index)}>
                     <View style={styles.rowExer}>
                         <TextInput style={[styles.textInputExer, styles.firstInputExer]} placeholder={item.exerciseName} />
-                        <TextInput style={[styles.textInputExer, styles.resistInputExer]} maxLength={4} placeholder={lastData.resistance.toString()} />
-                        <TextInput style={[styles.textInputExer, styles.repInputExer]} maxLength={2} placeholder={lastData.reps[0]} />
-                        <TextInput style={[styles.textInputExer, styles.repInputExer]} maxLength={2}placeholder={lastData.reps[0]} />
-                        <TextInput style={[styles.textInputExer, styles.repInputExer]} maxLength={2} placeholder={lastData.reps[0]} />
+                        <TextInput style={[styles.textInputExer, styles.resistInputExer]} keyboardType="numeric" maxLength={4} placeholder={lastData.resistance.toString()} />
+                        <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2} placeholder={lastData.reps[0]} />
+                        <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2}placeholder={lastData.reps[1]} />
+                        <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2} placeholder={lastData.reps[2]} />
                     </View>
                     <View style={styles.rowExer}>
                         <TextInput style={[styles.textInputExer, styles.fullWidthInputExer]} placeholder={lastData.notes} />

@@ -7,10 +7,10 @@ const secondary : string = '#83B4FF'
 const tertiary : string = '#1A2130'
 /*
 Color Pallette: https://colorhunt.co/palettes/popular
-Sand tan: #FFF5E1 -- Background of app?
-Light Blue: #83B4FF
-Steel Blue: #5A72A0
-Blue-Black: #1A2130
+Sand tan: #FFF5E1 --> bgColor
+Light Blue: #83B4FF --> secondary
+Steel Blue: #5A72A0 --> primary
+Blue-Black: #1A2130 --> tertiary
 */
 export const styles = StyleSheet.create({
     container: { // style={styles.container}
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
         backgroundColor: secondary,
         borderRadius: 8,
         paddingVertical: 10,
-        paddingHorizontal: 0,
+        paddingHorizontal: 5,
         width: '100%',
         marginVertical: 5,
         marginHorizontal: 0,
@@ -58,9 +58,11 @@ export const styles = StyleSheet.create({
       textInputExer: {
         borderWidth: 1,
         borderColor: tertiary,
-        padding: 8,
+        padding: 6,
         marginHorizontal: 5,
         borderRadius: 4,
+        color: primary,
+        fontSize: 16
       },
       firstInputExer: {
         flex: 10,
@@ -74,6 +76,24 @@ export const styles = StyleSheet.create({
       fullWidthInputExer: {
         flex: 1,
         width: '100%',
+      },
+      textExer: {
+        paddingVertical: 5,
+        paddingHorizontal: 5,
+        marginHorizontal: 5,
+        borderRadius: 4,
+        fontSize: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: tertiary
+      },
+      firstTextExer: {
+        flex: 7,
+      },
+      resistTextExer: {
+        flex: 3,
+      },
+      repTextExer: {
+        flex: 1,
       },
       cardHalf: { // style={[styles.card, styles.shadowProp]}
         backgroundColor: secondary,

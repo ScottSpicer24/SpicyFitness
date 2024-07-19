@@ -95,6 +95,9 @@ export const styles = StyleSheet.create({
       repTextExer: {
         flex: 1,
       },
+      scrollContExer: {
+        width: "100%"
+      },
       cardHalf: { // style={[styles.card, styles.shadowProp]}
         backgroundColor: secondary,
         borderRadius: 8,

@@ -1,10 +1,11 @@
 import { Text, View, ActivityIndicator, Pressable, Button, Alert} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { signOut, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken } from '../functions/AuthFunctions';
 import { styles, generateBoxShadowStyle } from '../Styles';
 import { getCurrentWeight, WeightReturn} from '../functions/WeightFunctions';
 import { getActiveSplit, Return, SplitData } from '../functions/ExerciseFunctions';
+import { useFocusEffect } from '@react-navigation/native';
 
 /*TODO:
 - have sign out button confirm then return to login screen stack. 
@@ -27,15 +28,17 @@ const Home = ({navigation, route} : any) => {
         generateBoxShadowStyle();
         
         async function initializeInfo() {
-          //Iniitalize weight info
+          //I*************** WEIGHT *************************************/ 
           const res = await getCurrentWeight();
-          console.log(res)
+          console.log("Weight in home: ", res)
           if(res.statusCode !== 200){
             setErr(true)
           }
           else{setErr(false)}
           await setWeight(res.body.weight);
           await setWeightDate(res.body.date);
+
+          //**************** SPLIT SECTION **************************** */
 
           const splitRes: Return = await getActiveSplit()
           if(splitRes.statusCode === 200){
@@ -44,25 +47,57 @@ const Home = ({navigation, route} : any) => {
           }
 
           setIsLoading(false);
-          console.log(activeSplitDay)
-          console.log(activeSplit)
+          console.log("Home useEffect finished.")
         }
         initializeInfo();
       }, [refresh])
 
-
+      //updates the active split day when the active split first loads.
       useEffect(() => {
         if(activeSplitDay === "" && activeSplit !== undefined){
           const len = activeSplit.splitDays.length
           for (let i = 0; i < len; i++){
             if(activeSplit.splitDays[i].active){
               setActiveSplitDay(activeSplit.splitDays[i].splitDayID.replace(/^"|"$/g, '')) // removes extra "'s
-              
               break
             }
           }
         }
       }, [activeSplit]);
+
+      //After this page is returned to need to update the activesplit or active split day
+      useFocusEffect(
+        useCallback(() => {
+          resetSplit()
+        }, [])
+      )
+
+      async function resetSplit(){
+        // get the active split from the DB
+        const splitRes: Return = await getActiveSplit()
+        // if the response was valid set the new active day and new split
+        if(splitRes.statusCode === 200){
+          const parsedBody : SplitData = JSON.parse(splitRes.body)
+          resetSplitDay(parsedBody) // DO NOT wait for it setActiveSplit
+          await setActiveSplit(parsedBody)
+
+        }
+      }
+
+      //after the split is reset loop through the days 
+      async function resetSplitDay(newSplitData : SplitData){
+        if(newSplitData !== undefined){
+          //go through each of the days in the split
+          const len = newSplitData.splitDays.length
+          for (let i = 0; i < len; i++){
+            // if the active day is hit.
+            if(newSplitData.splitDays[i].active){
+              setActiveSplitDay(newSplitData.splitDays[i].splitDayID.replace(/^"|"$/g, '')) // removes extra "'s
+              break
+            }
+          }
+        }
+      }
 
       async function getUsersName(){
           const resp = await getCurrentUser()
@@ -88,13 +123,9 @@ const Home = ({navigation, route} : any) => {
               console.log(error)
             }
           )
-      }
+        }
 
-      async function weightButton(){
-        console.log("weight button pressed");
-        navigation.navigate("Weight");
-      }
-
+        
       const visualComponents = () => {
         if(isLoading){
           return (
@@ -122,7 +153,7 @@ const Home = ({navigation, route} : any) => {
             <Text style={styles.heading}>{username}</Text>
             
             <View style={styles.smallCardHolder}>
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => weightButton()}>
+              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Weight")}>
                 <Text style={styles.text}>{weight} lbs</Text>
               </Pressable>
 

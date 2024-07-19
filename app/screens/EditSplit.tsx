@@ -20,7 +20,8 @@ const EditSplit = ({navigation, route} : any) => {
     const [indexOfActive, setIndexOfActive] = useState(0)
 
     useEffect(() => {
-        
+        console.log("--------edit Split Page use effect-------")
+
         async function initializeInfo(){
             let arr : SplitDayData[] = []
             const len = split.splitDays.length
@@ -31,6 +32,8 @@ const EditSplit = ({navigation, route} : any) => {
                 }
                 
                 const resp : Return = await getSplitDay(cleanedID)
+                console.log("get split day: ", resp)
+                console.log("-----------------------------------------")
                 
                 if(resp.statusCode === 200){
                     const newEntry: SplitDayData = await JSON.parse(resp.body)
@@ -38,7 +41,6 @@ const EditSplit = ({navigation, route} : any) => {
                 }
             }
             setSplitDays(arr)
-            console.log(splitDays)
         }
         initializeInfo()
         setIsLoading(false)
@@ -71,7 +73,11 @@ const EditSplit = ({navigation, route} : any) => {
                 throw new Error('Network response was not ok');
             }
             const resp: Return = await response.json()
-            console.log("API call response: ", response);
+            console.log("API call response: ", resp);
+            if(resp.statusCode === 200){
+                split.splitDays = JSON.parse(resp.body)
+            }
+            console.log("split: ", split)
 
             return resp.statusCode
         }

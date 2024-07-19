@@ -1,7 +1,14 @@
-import { View, Text, ActivityIndicator, Pressable, TextInput } from 'react-native'
+import { View, Text, ActivityIndicator, Pressable, TextInput, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { ExerData, SplitData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
 import { styles, generateBoxShadowStyle } from '../Styles';
+
+/**
+ * FINISH exercise container
+ * CREATE new workout management system
+ * UPDATE to be blank when no workouts.
+ * 
+ */
 
 const Workout = ({navigation, route} : any) => {
     const splitDay : string = route.params.SplitDay
@@ -61,6 +68,7 @@ const Workout = ({navigation, route} : any) => {
     const exerciseContainer = (item: ExerData, index: number) => {
         const lastData = item.info[item.info.length - 1]
         
+        /* UNSELECTED EXERCISES */
         if(index !== pressedIndex){
             return(
                 <Pressable key={index} style={[styles.exerContainerUnpressed, styles.boxShadow]} onPress= {() => setPressedIndex(index)}>
@@ -74,6 +82,7 @@ const Workout = ({navigation, route} : any) => {
                 </Pressable>   
             )
         }
+        /* CURRENT EXERCISE */ 
         else{
             return(
                 <Pressable key={index} style={[styles.exerContainerPressed]} onPress= {() => setPressedIndex(index)}>
@@ -104,14 +113,18 @@ const Workout = ({navigation, route} : any) => {
         }
         else if(isErr){
             return(
-                <Text style={styles.heading}>Error Loading Data</Text>
+                <View style={styles.form}>
+                    <Text style={styles.heading}>Error Loading Data</Text>
+                </View>
             )
         }
         else{
             return(
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
-                    {prevWorkout.map((item, index) => (exerciseContainer(item, index)))}
+                    <ScrollView style={styles.scrollContExer}>
+                        {prevWorkout.map((item, index) => (exerciseContainer(item, index)))}
+                    </ScrollView>
                 </View>
             )
         }

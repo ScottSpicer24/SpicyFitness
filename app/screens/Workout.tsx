@@ -6,7 +6,6 @@ import { styles, generateBoxShadowStyle } from '../Styles';
 /**
  * FINISH exercise container
  * CREATE new workout management system
- * UPDATE to be blank when no workouts.
  * 
  */
 
@@ -39,17 +38,38 @@ const Workout = ({navigation, route} : any) => {
 
                     //DO NOT use splitDayData bc os async nature it does not update in time
                     const len = data.workouts.length
+                    console.log(len)
                     const prevWorkoutID = data.workouts[len - 1]
                     
-                    // get and prepare workout exercise data
-                    const res : WorkoutReturn = await getLastWorkout(prevWorkoutID)
-                    console.log(res.statusCode)
-                    if(res.statusCode === 200){
-                        //console.log(res.body[0].info)
-                        setPrevWorkout(res.body)
+                    if(len > 0){
+                        // get and prepare workout exercise data
+                        const res : WorkoutReturn = await getLastWorkout(prevWorkoutID)
+
+                        console.log(res.statusCode)
+                        if(res.statusCode === 200){
+                            //console.log(res.body[0].info)
+                            setPrevWorkout(res.body)
+                        }
+                        else{
+                            setIsErr(true)
+                        }
                     }
                     else{
-                        setIsErr(true)
+                        const blank : ExerData[] = [{
+                            "ExerciseID" : "",
+                            "exerciseName" : "New Exercise",
+                            "info" : [{
+                                "date" : "",
+                                "workoutID": "",
+                                "reps" : ["0", "0", "0"],
+                                "notes" : "Notes.",
+                                "sets" : 1,
+                                "resistance" : 0
+                            }],
+                            "userID" : ""
+                        }]
+
+                        setPrevWorkout(blank)
                     }
                 }
                 else{

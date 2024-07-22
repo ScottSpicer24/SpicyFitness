@@ -61,8 +61,6 @@ export const styles = StyleSheet.create({
         padding: 6,
         marginHorizontal: 5,
         borderRadius: 4,
-        color: primary,
-        fontSize: 16
       },
       firstInputExer: {
         flex: 10,
@@ -82,7 +80,6 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 5,
         marginHorizontal: 5,
         borderRadius: 4,
-        fontSize: 16,
         borderBottomWidth: 1,
         borderBottomColor: tertiary
       },
@@ -97,6 +94,16 @@ export const styles = StyleSheet.create({
       },
       scrollContExer: {
         width: "100%"
+      },
+      confirmedExerText: {
+        color: primary,
+        fontSize: 15,
+        fontWeight: 'bold',
+      },
+      unconfirmedExerText: {
+        borderBottomColor: tertiary,
+        fontSize: 15,
+        opacity: 0.5
       },
       cardHalf: { // style={[styles.card, styles.shadowProp]}
         backgroundColor: secondary,

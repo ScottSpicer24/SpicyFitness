@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator, Pressable, TextInput, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { ExerData, SplitData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
-import { styles, generateBoxShadowStyle } from '../Styles';
+import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
+import { styles } from '../Styles';
 
 /**
  * FINISH exercise container
@@ -21,6 +21,7 @@ const Workout = ({navigation, route} : any) => {
         "workouts" : [],
     })
     const [prevWorkout, setPrevWorkout] = useState<ExerData[]>([])
+    const [newWorkout, setNewWorkout] = useState<WorkoutData[]>([])
     const [pressedIndex, setPressedIndex] = useState(0)
     
 
@@ -28,7 +29,7 @@ const Workout = ({navigation, route} : any) => {
         async function initializeInfo(){
             try{
                 setIsErr(false)
-                generateBoxShadowStyle();
+
                 const resp = await getSplitDay(splitDay)
                 //if you can get splitday
                 if(resp.statusCode === 200){
@@ -38,7 +39,6 @@ const Workout = ({navigation, route} : any) => {
 
                     //DO NOT use splitDayData bc os async nature it does not update in time
                     const len = data.workouts.length
-                    console.log(len)
                     const prevWorkoutID = data.workouts[len - 1]
                     
                     if(len > 0){
@@ -49,6 +49,21 @@ const Workout = ({navigation, route} : any) => {
                         if(res.statusCode === 200){
                             //console.log(res.body[0].info)
                             setPrevWorkout(res.body)
+                            let arr : WorkoutData[] = []
+                            for(const exer of res.body){
+                                const len = exer.info[exer.info.length - 1].reps.length // acccess the number or reps
+                                const falseArray = Array(len).fill(false) // create an array of all false
+                                
+                                const newEntry : WorkoutData = {
+                                    "exercise" : exer,
+                                    "confirmedName" : false,
+                                    "confirmedResistance" : false,
+                                    "confirmedReps" : falseArray,
+                                    "confirmedNotes" : false
+                                }
+                                arr.push(newEntry)
+                            }
+                            setNewWorkout(arr)
                         }
                         else{
                             setIsErr(true)
@@ -70,6 +85,14 @@ const Workout = ({navigation, route} : any) => {
                         }]
 
                         setPrevWorkout(blank)
+                        let arr : WorkoutData[] = [{
+                            "exercise" : blank[0],
+                            "confirmedName" : false,
+                            "confirmedResistance" : false,
+                            "confirmedReps" : [false],
+                            "confirmedNotes" : false
+                        }]
+                        setNewWorkout(arr)
                     }
                 }
                 else{
@@ -85,15 +108,15 @@ const Workout = ({navigation, route} : any) => {
         initializeInfo()
     }, [])
 
-    const exerciseContainer = (item: ExerData, index: number) => {
-        const lastData = item.info[item.info.length - 1]
+    const exerciseContainer = (item: WorkoutData, index: number) => {
+        const lastData = item.exercise.info[item.exercise.info.length - 1]
         
         /* UNSELECTED EXERCISES */
         if(index !== pressedIndex){
             return(
-                <Pressable key={index} style={[styles.exerContainerUnpressed, styles.boxShadow]} onPress= {() => setPressedIndex(index)}>
+                <Pressable key={index} style={[styles.exerContainerUnpressed]} onPress= {() => setPressedIndex(index)}>
                     <View style={[styles.rowExer]}>
-                        <Text style={[styles.textExer, styles.firstTextExer]}>{item.exerciseName}</Text>
+                        <Text style={[styles.textExer, styles.firstTextExer]}>{item.exercise.exerciseName}</Text>
                         <Text style={[styles.textExer, styles.resistTextExer]}>{lastData.resistance} lbs</Text>
                         <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[0]}</Text>
                         <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[1]}</Text>
@@ -107,7 +130,7 @@ const Workout = ({navigation, route} : any) => {
             return(
                 <Pressable key={index} style={[styles.exerContainerPressed]} onPress= {() => setPressedIndex(index)}>
                     <View style={styles.rowExer}>
-                        <TextInput style={[styles.textInputExer, styles.firstInputExer]} placeholder={item.exerciseName} />
+                        <TextInput style={[styles.textInputExer, styles.firstInputExer]} placeholder={item.exercise.exerciseName} />
                         <TextInput style={[styles.textInputExer, styles.resistInputExer]} keyboardType="numeric" maxLength={4} placeholder={lastData.resistance.toString()} />
                         <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2} placeholder={lastData.reps[0]} />
                         <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2}placeholder={lastData.reps[1]} />
@@ -143,7 +166,7 @@ const Workout = ({navigation, route} : any) => {
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
                     <ScrollView style={styles.scrollContExer}>
-                        {prevWorkout.map((item, index) => (exerciseContainer(item, index)))}
+                        {newWorkout.map((item, index) => (exerciseContainer(item, index)))}
                     </ScrollView>
                 </View>
             )

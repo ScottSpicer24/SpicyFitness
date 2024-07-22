@@ -53,6 +53,14 @@ export type ExerData = {
     "userID" : string
 }
 
+export type WorkoutData = {
+    "exercise" : ExerData,
+    "confirmedName" : boolean,
+    "confirmedResistance" : boolean,
+    "confirmedReps" : boolean[],
+    "confirmedNotes" : boolean
+}
+
 
 export async function getSplitsAll() : Promise<Return>{
     const resp = await getCurrentUser()

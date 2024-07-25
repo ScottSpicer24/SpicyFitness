@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
       },
       exerContainerUnpressed: { // style={styles.exerContainerUnpressed}
-        backgroundColor: secondary,
+        backgroundColor: bgColor,
         borderRadius: 8,
         paddingVertical: 10,
         paddingHorizontal: 5,
@@ -39,12 +39,13 @@ export const styles = StyleSheet.create({
         marginVertical: 5,
         marginHorizontal: 0,
         alignItems: 'center',
+        //borderTopWidth: 1,
       },
       exerContainerPressed: { // style={[styles.exerContainerPressed, styles.shadowProp]}
-        backgroundColor: bgColor,
+        backgroundColor: secondary,
         borderRadius: 8,
         paddingVertical: 10,
-        paddingHorizontal: 0,
+        paddingHorizontal: 10,
         width: '100%',
         marginVertical: 5,
         marginHorizontal: 0,
@@ -61,12 +62,13 @@ export const styles = StyleSheet.create({
         padding: 6,
         marginHorizontal: 5,
         borderRadius: 4,
+        fontSize: 15,
       },
       firstInputExer: {
         flex: 10,
       },
       resistInputExer: {
-        flex: 2,
+        flex: 3,
       },
       repInputExer: {
         flex: 1,

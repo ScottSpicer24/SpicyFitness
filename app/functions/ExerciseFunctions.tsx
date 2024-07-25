@@ -54,7 +54,14 @@ export type ExerData = {
 }
 
 export type WorkoutData = {
-    "exercise" : ExerData,
+    "exercise" : {
+        "exerciseID": string,
+        "name": string,
+        "resistance": number,
+        "sets": number,
+        "reps": string[],
+        "notes": string
+      },
     "confirmedName" : boolean,
     "confirmedResistance" : boolean,
     "confirmedReps" : boolean[],

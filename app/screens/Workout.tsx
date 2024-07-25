@@ -25,6 +25,12 @@ const Workout = ({navigation, route} : any) => {
     const [pressedIndex, setPressedIndex] = useState(0)
     
 
+    /* 
+    for the new workout has the data for each exercise and whether it is confirmed.
+    unconfrimed means it is from prev workout.
+    get the data from the prev workout of this split day and fill it in the new workout, all unconfirmed.
+    if none fill with an empty one.
+    */
     useEffect(() => {
         async function initializeInfo(){
             try{
@@ -55,7 +61,14 @@ const Workout = ({navigation, route} : any) => {
                                 const falseArray = Array(len).fill(false) // create an array of all false
                                 
                                 const newEntry : WorkoutData = {
-                                    "exercise" : exer,
+                                    "exercise" : {
+                                        "exerciseID": "",
+                                        "name": exer.exerciseName,
+                                        "resistance": exer.info[exer.info.length - 1].resistance,
+                                        "sets": len,
+                                        "reps": exer.info[exer.info.length - 1].reps,
+                                        "notes": exer.info[exer.info.length - 1].notes
+                                    },
                                     "confirmedName" : false,
                                     "confirmedResistance" : false,
                                     "confirmedReps" : falseArray,
@@ -83,13 +96,20 @@ const Workout = ({navigation, route} : any) => {
                             }],
                             "userID" : ""
                         }]
-
                         setPrevWorkout(blank)
+
                         let arr : WorkoutData[] = [{
-                            "exercise" : blank[0],
+                            "exercise" : {
+                                "exerciseID": "",
+                                "name": "",
+                                "resistance": 0,
+                                "sets": 3,
+                                "reps": ["0", "0", "0"],
+                                "notes": ""
+                            },
                             "confirmedName" : false,
                             "confirmedResistance" : false,
-                            "confirmedReps" : [false],
+                            "confirmedReps" : [false, false, false],
                             "confirmedNotes" : false
                         }]
                         setNewWorkout(arr)
@@ -108,19 +128,87 @@ const Workout = ({navigation, route} : any) => {
         initializeInfo()
     }, [])
 
+    /* 
+    designed to handle updates to the TextInput components 
+    and update the relevant part of the WorkoutData state. 
+    It can handle both top-level properties of ExerData 
+    and nested properties inside the info array within ExerData. 
+    */
+    const inputChange = (
+        workoutIndex: number,  // Index of the WorkoutData item in the workouts array
+        key: string,           // Key of the top-level property or 'exercise' array key
+        value: string,         // New value to be set
+        repIndex?: number,    // Optional: Index of the rep array item (if updating a nested property)
+    ) => {
+        // Step 1: Create a copy of the current workouts state
+        const updatedWorkouts = [...newWorkout];
+
+        if (key === 'reps' && repIndex !== undefined) {
+            // Update the specific rep in the reps array
+            updatedWorkouts[workoutIndex].exercise.reps[repIndex] = value as string;
+            updatedWorkouts[workoutIndex].confirmedReps[repIndex] = true;
+        }
+        else{
+            switch (key) {
+                case 'name':
+                    // Update the property in the copied state and confirm it
+                    updatedWorkouts[workoutIndex].exercise[key] = value;
+                    updatedWorkouts[workoutIndex].confirmedName = true
+                    break;
+                case 'notes':
+                    updatedWorkouts[workoutIndex].exercise[key] = value;
+                    updatedWorkouts[workoutIndex].confirmedNotes = true
+                    break
+                case 'exerciseID':
+                    updatedWorkouts[workoutIndex].exercise[key] = value;
+                    break
+                case 'resistance':
+                    let newResistance : number = Number(value)
+                    updatedWorkouts[workoutIndex].exercise[key] = newResistance;
+                    // confirm it 
+                    updatedWorkouts[workoutIndex].confirmedResistance = true
+
+                    break
+                case 'sets':
+                    let newValue: number = parseInt(value as string, 10);
+                    updatedWorkouts[workoutIndex].exercise[key] = newValue;
+                    break
+                default:
+                    setIsErr(true)
+                    break;
+            }
+        }
+
+        setNewWorkout(updatedWorkouts)
+    }
+
+
+    const repContainer = (reps : string, index: number, confirmed : boolean) => {
+        return (
+            <Text key={index} style={[styles.textExer, 
+                styles.repTextExer,
+                confirmed ? styles.confirmedExerText : styles.unconfirmedExerText]}>
+            {reps}</Text>
+        )
+    }
+
     const exerciseContainer = (item: WorkoutData, index: number) => {
-        const lastData = item.exercise.info[item.exercise.info.length - 1]
-        
+        const lastData = item.exercise
+
         /* UNSELECTED EXERCISES */
         if(index !== pressedIndex){
             return(
                 <Pressable key={index} style={[styles.exerContainerUnpressed]} onPress= {() => setPressedIndex(index)}>
                     <View style={[styles.rowExer]}>
-                        <Text style={[styles.textExer, styles.firstTextExer]}>{item.exercise.exerciseName}</Text>
-                        <Text style={[styles.textExer, styles.resistTextExer]}>{lastData.resistance} lbs</Text>
-                        <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[0]}</Text>
-                        <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[1]}</Text>
-                        <Text style={[styles.textExer, styles.repTextExer]}>{lastData.reps[2]}</Text> 
+                        <Text style={[styles.textExer, 
+                            styles.firstTextExer, 
+                            item.confirmedName ? styles.confirmedExerText : styles.unconfirmedExerText]}>
+                            {item.exercise.name}</Text>
+                        <Text style={[styles.textExer, 
+                            styles.resistTextExer, 
+                            item.confirmedResistance ? styles.confirmedExerText : styles.unconfirmedExerText]}>
+                            {lastData.resistance} lbs</Text>
+                        {lastData.reps.map((rep, index) => (repContainer(rep, index, item.confirmedReps[index])))}
                     </View>
                 </Pressable>   
             )
@@ -129,20 +217,66 @@ const Workout = ({navigation, route} : any) => {
         else{
             return(
                 <Pressable key={index} style={[styles.exerContainerPressed]} onPress= {() => setPressedIndex(index)}>
+                    {/* Row 1: NAME*/}
                     <View style={styles.rowExer}>
-                        <TextInput style={[styles.textInputExer, styles.firstInputExer]} placeholder={item.exercise.exerciseName} />
-                        <TextInput style={[styles.textInputExer, styles.resistInputExer]} keyboardType="numeric" maxLength={4} placeholder={lastData.resistance.toString()} />
-                        <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2} placeholder={lastData.reps[0]} />
-                        <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2}placeholder={lastData.reps[1]} />
-                        <TextInput style={[styles.textInputExer, styles.repInputExer]} keyboardType="numeric" maxLength={2} placeholder={lastData.reps[2]} />
+                        <TextInput 
+                            style={[styles.textInputExer, styles.fullWidthInputExer]} 
+                            placeholder={item.exercise.name} 
+                            value={item.confirmedName ? lastData.name : ""}
+                            onChangeText={(text) => inputChange(index, 'name', text)}
+                        />
                     </View>
+                    
+                    {/* Row 2: RESISTANCE, REPS*/}
                     <View style={styles.rowExer}>
-                        <TextInput style={[styles.textInputExer, styles.fullWidthInputExer]} placeholder={lastData.notes} />
+                        
+                        <TextInput 
+                            style={[styles.textInputExer, styles.resistInputExer]} 
+                            keyboardType="numeric" 
+                            maxLength={4} 
+                            placeholder={lastData.resistance.toString()}
+                            value={item.confirmedResistance ? lastData.resistance.toString() : ""} 
+                            onChangeText={(text) => inputChange(index, 'resistance', text)}
+                        />
+
+                        <TextInput 
+                            style={[styles.textInputExer, styles.repInputExer]} 
+                            keyboardType="numeric" 
+                            maxLength={2} 
+                            placeholder={lastData.reps[0]} 
+                            value={item.confirmedReps[0] ? lastData.reps[0] : ""}
+                            onChangeText={(text) => inputChange(index, 'reps', text, 0)}
+                        />
+                        <TextInput 
+                            style={[styles.textInputExer, styles.repInputExer]} 
+                            keyboardType="numeric" 
+                            maxLength={2} 
+                            placeholder={lastData.reps[1]} 
+                            value={item.confirmedReps[1] ? lastData.reps[1] : ""}
+                            onChangeText={(text) => inputChange(index, 'reps', text, 1)}
+                        />
+                        <TextInput 
+                            style={[styles.textInputExer, styles.repInputExer]} 
+                            keyboardType="numeric" 
+                            maxLength={2} 
+                            placeholder={lastData.reps[2]} 
+                            value={item.confirmedReps[2] ? lastData.reps[2] : ""}
+                            onChangeText={(text) => inputChange(index, 'reps', text, 2)}
+                        />
+                    </View> 
+                    
+                    {/* Row 3: NOTES*/}
+                    <View style={styles.rowExer}>
+                        <TextInput 
+                            style={[styles.textInputExer, styles.fullWidthInputExer]} 
+                            placeholder={lastData.notes} 
+                            value={item.confirmedNotes ? lastData.notes : ""}
+                            onChangeText={(text) => inputChange(index, 'notes', text)}
+                        />
                     </View>
                 </Pressable>
             )
         }
-        
     }
 
     const visualComponents = () => {

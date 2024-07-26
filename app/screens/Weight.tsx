@@ -68,7 +68,7 @@ const Weight = () => {
         }
         else{
           return (
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.form}>
                 <Text style={styles.heading}>Weight: {weight} lbs</Text>
                 <Text style={styles.heading}>---</Text>

@@ -3,10 +3,16 @@ import React, { useEffect, useState } from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
 import { styles } from '../Styles';
 
-/**
- * FINISH exercise container
- * CREATE new workout management system
- * 
+/** TODOs: 
+ *  ------
+ * position ---> button 
+ * center text input on focus
+ * automatically go to next when ---> clcked (fill in if empty or partial, don't if not)
+ * select prev workouts
+ * create a timer component next to --->
+ * create function to send AP call to log workout
+ * bloom filter of workouts to auto fill in as typing and API to get that data
+ * edit amount of sets.
  */
 
 const Workout = ({navigation, route} : any) => {
@@ -202,6 +208,7 @@ const Workout = ({navigation, route} : any) => {
 
     const handleFocus = (workoutIndex: number, key: keyof WorkoutData['exercise'], repIndex?: number) => {
         setFocusedInput({ workoutIndex, key, repIndex });
+        //this.scrollViewRef.current.scrollTo({ y: focusedItemOffset, animated: true });
     }
 
     const repContainer = (reps : string, index: number, confirmed : boolean) => {
@@ -270,7 +277,7 @@ const Workout = ({navigation, route} : any) => {
                                 keyboardType="numeric" 
                                 maxLength={2} 
                                 placeholder={rep} 
-                                value={item.confirmedReps[0] ? rep : ""}
+                                value={item.confirmedReps[repIndex] ? rep : ""}
                                 onChangeText={(text) => inputChange(index, 'reps', text, repIndex)}
                                 onFocus={() => handleFocus(index, 'reps', repIndex)}
                             />
@@ -314,9 +321,9 @@ const Workout = ({navigation, route} : any) => {
             return(
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
-                    <ScrollView style={styles.scrollContExer}>
+                    <ScrollView style={styles.scrollContExer} keyboardShouldPersistTaps="handled">
                         <Pressable style={styles.button} onPress={() => confirmInput()}>
-                            <Text style={styles.text}>Use Last</Text>
+                            <Text style={styles.text}> ---{'>'} </Text>
                         </Pressable>
                         {newWorkout.map((item, index) => (exerciseContainer(item, index)))}
                     </ScrollView>

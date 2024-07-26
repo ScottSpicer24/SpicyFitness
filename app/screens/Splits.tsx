@@ -23,7 +23,6 @@ const Splits = () => {
     const [newSplitDays, setNewSplitDays] = useState<string[]>([])
     const [newDayInSplit, setNewDayInSplit] = useState("")
     const [activeSplit, setActiveSplit] = useState(-1)
-    //const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         async function initializeInfo() {
@@ -113,6 +112,7 @@ const Splits = () => {
   }
 
     const createSplit = async () => {
+      setIsLoading(true)
       const resp= await getCurrentUser()
       const userID = resp.userId
       
@@ -132,8 +132,9 @@ const Splits = () => {
         setNewDayInSplit("")
         setNewSplitDays([])
       }
+      setIsLoading(false)
     }
-
+//**************** */
     const visualComponents = () => {
         if(isLoading){
           return (
@@ -160,7 +161,7 @@ const Splits = () => {
         }
         else{
             return(
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps="handled"> 
                     <Text style={styles.headingSplits}>Your Splits</Text>
                     {splitData.map((item, index) => showSplits(item, index))}
                     
@@ -172,7 +173,7 @@ const Splits = () => {
 
                       <Pressable style={styles.button} onPress={() => {
                         setNewSplitDays(newSplitDays.concat(newDayInSplit))
-                        //setRefresh(!refresh)
+                        setNewDayInSplit("")
                       }}>
                         <Text style={styles.text}>Add Day</Text>
                       </Pressable>
@@ -194,3 +195,7 @@ const Splits = () => {
 }
 
 export default Splits
+
+
+
+

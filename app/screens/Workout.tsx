@@ -23,6 +23,7 @@ const Workout = ({navigation, route} : any) => {
     const [prevWorkout, setPrevWorkout] = useState<ExerData[]>([])
     const [newWorkout, setNewWorkout] = useState<WorkoutData[]>([])
     const [pressedIndex, setPressedIndex] = useState(0)
+    const [focusedInput, setFocusedInput] = useState<{ workoutIndex: number; key: keyof WorkoutData['exercise']; repIndex?: number } | null>(null);
     
 
     /* 
@@ -182,6 +183,26 @@ const Workout = ({navigation, route} : any) => {
         setNewWorkout(updatedWorkouts)
     }
 
+    const confirmInput = () => {
+        if (focusedInput) {
+          const { workoutIndex, key, repIndex } = focusedInput;
+          const updatedWorkouts = [...newWorkout];
+          if (key === 'reps' && repIndex !== undefined) {
+            updatedWorkouts[workoutIndex].confirmedReps[repIndex] = true;
+          } else if (key === 'name') {
+            updatedWorkouts[workoutIndex].confirmedName = true;
+          } else if (key === 'resistance') {
+            updatedWorkouts[workoutIndex].confirmedResistance = true;
+          } else if (key === 'notes') {
+            updatedWorkouts[workoutIndex].confirmedNotes = true;
+          }
+          setNewWorkout(updatedWorkouts);
+        }
+    }
+
+    const handleFocus = (workoutIndex: number, key: keyof WorkoutData['exercise'], repIndex?: number) => {
+        setFocusedInput({ workoutIndex, key, repIndex });
+    }
 
     const repContainer = (reps : string, index: number, confirmed : boolean) => {
         return (
@@ -224,6 +245,7 @@ const Workout = ({navigation, route} : any) => {
                             placeholder={item.exercise.name} 
                             value={item.confirmedName ? lastData.name : ""}
                             onChangeText={(text) => inputChange(index, 'name', text)}
+                            onFocus={() => handleFocus(index, 'name')}
                         />
                     </View>
                     
@@ -237,32 +259,24 @@ const Workout = ({navigation, route} : any) => {
                             placeholder={lastData.resistance.toString()}
                             value={item.confirmedResistance ? lastData.resistance.toString() : ""} 
                             onChangeText={(text) => inputChange(index, 'resistance', text)}
+                            onFocus={() => handleFocus(index, 'resistance')}
                         />
 
-                        <TextInput 
-                            style={[styles.textInputExer, styles.repInputExer]} 
-                            keyboardType="numeric" 
-                            maxLength={2} 
-                            placeholder={lastData.reps[0]} 
-                            value={item.confirmedReps[0] ? lastData.reps[0] : ""}
-                            onChangeText={(text) => inputChange(index, 'reps', text, 0)}
-                        />
-                        <TextInput 
-                            style={[styles.textInputExer, styles.repInputExer]} 
-                            keyboardType="numeric" 
-                            maxLength={2} 
-                            placeholder={lastData.reps[1]} 
-                            value={item.confirmedReps[1] ? lastData.reps[1] : ""}
-                            onChangeText={(text) => inputChange(index, 'reps', text, 1)}
-                        />
-                        <TextInput 
-                            style={[styles.textInputExer, styles.repInputExer]} 
-                            keyboardType="numeric" 
-                            maxLength={2} 
-                            placeholder={lastData.reps[2]} 
-                            value={item.confirmedReps[2] ? lastData.reps[2] : ""}
-                            onChangeText={(text) => inputChange(index, 'reps', text, 2)}
-                        />
+                        {lastData.reps.map((rep, repIndex) => {
+                            return (
+                            <TextInput 
+                                key={repIndex}
+                                style={[styles.textInputExer, styles.repInputExer]} 
+                                keyboardType="numeric" 
+                                maxLength={2} 
+                                placeholder={rep} 
+                                value={item.confirmedReps[0] ? rep : ""}
+                                onChangeText={(text) => inputChange(index, 'reps', text, repIndex)}
+                                onFocus={() => handleFocus(index, 'reps', repIndex)}
+                            />
+                        )
+                        })}
+                        
                     </View> 
                     
                     {/* Row 3: NOTES*/}
@@ -272,6 +286,7 @@ const Workout = ({navigation, route} : any) => {
                             placeholder={lastData.notes} 
                             value={item.confirmedNotes ? lastData.notes : ""}
                             onChangeText={(text) => inputChange(index, 'notes', text)}
+                            onFocus={() => handleFocus(index, 'notes')}
                         />
                     </View>
                 </Pressable>
@@ -300,6 +315,9 @@ const Workout = ({navigation, route} : any) => {
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
                     <ScrollView style={styles.scrollContExer}>
+                        <Pressable style={styles.button} onPress={() => confirmInput()}>
+                            <Text style={styles.text}>Use Last</Text>
+                        </Pressable>
                         {newWorkout.map((item, index) => (exerciseContainer(item, index)))}
                     </ScrollView>
                 </View>

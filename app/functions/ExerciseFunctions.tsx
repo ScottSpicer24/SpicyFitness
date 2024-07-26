@@ -1,4 +1,4 @@
-import { getIDToken, getCurrentUserID } from "./AuthFunctions";
+import { getIDToken } from "./AuthFunctions";
 import { getCurrentUser } from 'aws-amplify/auth';
 
 

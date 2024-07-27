@@ -244,6 +244,7 @@ const Workout = ({navigation, route} : any) => {
         /* CURRENT EXERCISE */ 
         else{
             return(
+                <>
                 <Pressable key={index} style={[styles.exerContainerPressed]} onPress= {() => setPressedIndex(index)}>
                     {/* Row 1: NAME*/}
                     <View style={styles.rowExer}>
@@ -297,6 +298,16 @@ const Workout = ({navigation, route} : any) => {
                         />
                     </View>
                 </Pressable>
+                <View style={styles.rowExer}>
+                    <Pressable key={-1} style={[styles.buttonMed, styles.buttonExer]} onPress={() => console.log("select pressed")}>
+                        <Text style={styles.text}> Select Exercise </Text>
+                    </Pressable>
+                    <Pressable key={-2} style={[styles.buttonMed, styles.buttonNext]} onPress={() => confirmInput()}>
+                        <Text style={styles.text}> ---{'>'} </Text>
+                    </Pressable>
+                </View>
+                
+                </>
             )
         }
     }
@@ -322,9 +333,6 @@ const Workout = ({navigation, route} : any) => {
                 <View style={styles.form}>
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
                     <ScrollView style={styles.scrollContExer} keyboardShouldPersistTaps="handled">
-                        <Pressable style={styles.button} onPress={() => confirmInput()}>
-                            <Text style={styles.text}> ---{'>'} </Text>
-                        </Pressable>
                         {newWorkout.map((item, index) => (exerciseContainer(item, index)))}
                     </ScrollView>
                 </View>

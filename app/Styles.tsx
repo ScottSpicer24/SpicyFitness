@@ -36,10 +36,10 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 5,
         width: '100%',
-        marginVertical: 5,
+        marginVertical: 0,
         marginHorizontal: 0,
         alignItems: 'center',
-        //borderTopWidth: 1,
+        zIndex : 1
       },
       exerContainerPressed: { // style={[styles.exerContainerPressed, styles.shadowProp]}
         backgroundColor: secondary,
@@ -50,6 +50,7 @@ export const styles = StyleSheet.create({
         marginVertical: 5,
         marginHorizontal: 0,
         alignItems: 'center',
+        zIndex : 1
       },
       rowExer: {
         flexDirection: 'row',
@@ -150,6 +151,31 @@ export const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         backgroundColor: 'skyblue',
+      },
+      buttonMed: { // style={styles.buttonMed}
+        alignItems: 'center',
+        paddingVertical: 10,
+        margin: 10,
+        width: '100%',
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: tertiary,
+      },
+      buttonExer:{
+        flex: 1
+      },
+      buttonNext:{
+        flex: 1
+      },
+      floatingButton: {
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginLeft: '55%',
+        marginVertical : 15,
+        width: 125,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: tertiary,
       },
       text: { // style={styles.text}
         fontSize: 16,

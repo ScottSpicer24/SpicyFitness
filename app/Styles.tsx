@@ -154,18 +154,20 @@ export const styles = StyleSheet.create({
       },
       buttonMed: { // style={styles.buttonMed}
         alignItems: 'center',
+        justifyContent: 'center',
         paddingVertical: 10,
-        margin: 10,
+        marginVertical: 10,
+        marginHorizontal: 1,
         width: '100%',
         borderRadius: 4,
         elevation: 3,
         backgroundColor: tertiary,
       },
       buttonExer:{
-        flex: 1
+        flex: 4
       },
       buttonNext:{
-        flex: 1
+        flex: 2
       },
       floatingButton: {
         alignItems: 'center',

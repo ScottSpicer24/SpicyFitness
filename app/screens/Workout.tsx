@@ -1,5 +1,5 @@
-import { View, Text, ActivityIndicator, Pressable, TextInput, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, ActivityIndicator, Pressable, TextInput, ScrollView, Alert } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
 import { styles } from '../Styles';
 
@@ -31,6 +31,7 @@ const Workout = ({navigation, route} : any) => {
     const [pressedIndex, setPressedIndex] = useState(0)
     const [focusedInput, setFocusedInput] = useState<{ workoutIndex: number; key: keyof WorkoutData['exercise']; repIndex?: number } | null>(null);
     
+    const inputRefs = useRef<any>([]);
 
     /* 
     for the new workout has the data for each exercise and whether it is confirmed.
@@ -105,20 +106,7 @@ const Workout = ({navigation, route} : any) => {
                         }]
                         setPrevWorkout(blank)
 
-                        let arr : WorkoutData[] = [{
-                            "exercise" : {
-                                "exerciseID": "",
-                                "name": "",
-                                "resistance": 0,
-                                "sets": 3,
-                                "reps": ["0", "0", "0"],
-                                "notes": ""
-                            },
-                            "confirmedName" : false,
-                            "confirmedResistance" : false,
-                            "confirmedReps" : [false, false, false],
-                            "confirmedNotes" : false
-                        }]
+                        let arr : WorkoutData[] = [defaultNewWorkout]
                         setNewWorkout(arr)
                     }
                 }
@@ -189,21 +177,49 @@ const Workout = ({navigation, route} : any) => {
         setNewWorkout(updatedWorkouts)
     }
 
+    // confirms the input (auto is typed, from prev only is ---> is pressed)
     const confirmInput = () => {
         if (focusedInput) {
           const { workoutIndex, key, repIndex } = focusedInput;
+          
           const updatedWorkouts = [...newWorkout];
           if (key === 'reps' && repIndex !== undefined) {
             updatedWorkouts[workoutIndex].confirmedReps[repIndex] = true;
+            inputRefs.current[2 + repIndex + 1].focus();
           } else if (key === 'name') {
             updatedWorkouts[workoutIndex].confirmedName = true;
+            console.log(inputRefs)
+            inputRefs.current[1].focus();
           } else if (key === 'resistance') {
             updatedWorkouts[workoutIndex].confirmedResistance = true;
+            inputRefs.current[2].focus();
           } else if (key === 'notes') {
             updatedWorkouts[workoutIndex].confirmedNotes = true;
+            const len = updatedWorkouts.length
+            if(pressedIndex + 1 < len){
+                setPressedIndex(pressedIndex + 1)
+            }
           }
           setNewWorkout(updatedWorkouts);
         }
+    }
+
+    const addExercise = () => {
+        const updatedWorkouts = [...newWorkout];
+        updatedWorkouts.splice(pressedIndex + 1, 0, { ...defaultNewWorkout });
+        setNewWorkout(updatedWorkouts);
+        setPressedIndex(pressedIndex + 1)
+    }
+
+    const removeExercise = () => {
+        if(newWorkout.length == 1){
+            Alert.alert('Error', 'Must have at least 1 exercise.', [{text: 'Close', onPress: () => console.log('Closed Pressed')}])
+            return
+        }
+
+        const updatedWorkouts = [...newWorkout];
+        updatedWorkouts.splice(pressedIndex, 1,);
+        setNewWorkout(updatedWorkouts);
     }
 
     const handleFocus = (workoutIndex: number, key: keyof WorkoutData['exercise'], repIndex?: number) => {
@@ -253,7 +269,9 @@ const Workout = ({navigation, route} : any) => {
                             placeholder={item.exercise.name} 
                             value={item.confirmedName ? lastData.name : ""}
                             onChangeText={(text) => inputChange(index, 'name', text)}
+                            autoFocus={true}
                             onFocus={() => handleFocus(index, 'name')}
+                            ref={(el) => inputRefs.current[0] = el}
                         />
                     </View>
                     
@@ -268,6 +286,7 @@ const Workout = ({navigation, route} : any) => {
                             value={item.confirmedResistance ? lastData.resistance.toString() : ""} 
                             onChangeText={(text) => inputChange(index, 'resistance', text)}
                             onFocus={() => handleFocus(index, 'resistance')}
+                            ref={(el) => inputRefs.current[1] = el}
                         />
 
                         {lastData.reps.map((rep, repIndex) => {
@@ -281,6 +300,7 @@ const Workout = ({navigation, route} : any) => {
                                 value={item.confirmedReps[repIndex] ? rep : ""}
                                 onChangeText={(text) => inputChange(index, 'reps', text, repIndex)}
                                 onFocus={() => handleFocus(index, 'reps', repIndex)}
+                                ref={(el) => inputRefs.current[2 + repIndex] = el}
                             />
                         )
                         })}
@@ -295,14 +315,21 @@ const Workout = ({navigation, route} : any) => {
                             value={item.confirmedNotes ? lastData.notes : ""}
                             onChangeText={(text) => inputChange(index, 'notes', text)}
                             onFocus={() => handleFocus(index, 'notes')}
+                            ref={(el) => inputRefs.current[2 + lastData.reps.length] = el}
                         />
                     </View>
                 </Pressable>
-                <View style={styles.rowExer}>
+                <View style={styles.rowExer} key={-1}>
                     <Pressable key={-1} style={[styles.buttonMed, styles.buttonExer]} onPress={() => console.log("select pressed")}>
                         <Text style={styles.text}> Select Exercise </Text>
                     </Pressable>
-                    <Pressable key={-2} style={[styles.buttonMed, styles.buttonNext]} onPress={() => confirmInput()}>
+                    <Pressable key={-2} style={[styles.buttonMed, styles.buttonNext]} onPress={() => addExercise()}>
+                        <Text style={styles.text}> + </Text>
+                    </Pressable>
+                    <Pressable key={-3} style={[styles.buttonMed, styles.buttonNext]} onPress={() => removeExercise()}>
+                        <Text style={styles.text}> - </Text>
+                    </Pressable>
+                    <Pressable key={-4} style={[styles.buttonMed, styles.buttonNext]} onPress={() => confirmInput()}>
                         <Text style={styles.text}> ---{'>'} </Text>
                     </Pressable>
                 </View>
@@ -347,5 +374,21 @@ const Workout = ({navigation, route} : any) => {
       </View>
     )
 }
+
+
+const defaultNewWorkout: WorkoutData = {
+    exercise: {
+      exerciseID: "",
+      name: "New Exercise",
+      resistance: 0,
+      sets: 3,
+      reps: ["0", "0", "0"],
+      notes: "Notes",
+    },
+    confirmedName: false,
+    confirmedResistance: false,
+    confirmedReps: [false, false, false],
+    confirmedNotes: false,
+  };
 
 export default Workout

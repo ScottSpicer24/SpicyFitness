@@ -10,7 +10,7 @@ import { getIDToken } from "../functions/AuthFunctions";
  * Merge excersises
  * Rename exercises
  * Rename days
- * 
+ * View prev workouts
  */
 
 const EditSplit = ({navigation, route} : any) => {

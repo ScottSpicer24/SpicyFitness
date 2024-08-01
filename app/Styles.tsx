@@ -39,7 +39,6 @@ export const styles = StyleSheet.create({
         marginVertical: 0,
         marginHorizontal: 0,
         alignItems: 'center',
-        zIndex : 1
       },
       exerContainerPressed: { // style={[styles.exerContainerPressed, styles.shadowProp]}
         backgroundColor: secondary,
@@ -50,7 +49,6 @@ export const styles = StyleSheet.create({
         marginVertical: 5,
         marginHorizontal: 0,
         alignItems: 'center',
-        zIndex : 1
       },
       rowExer: {
         flexDirection: 'row',
@@ -64,6 +62,13 @@ export const styles = StyleSheet.create({
         marginHorizontal: 5,
         borderRadius: 4,
         fontSize: 15,
+        //fontWeight: 'bold',
+      },
+      unconfirmedExerInputText: {
+        opacity: 0.75
+      },
+      confirmedExerInputText: {
+        fontWeight: 'bold',
       },
       firstInputExer: {
         flex: 10,
@@ -96,7 +101,10 @@ export const styles = StyleSheet.create({
         flex: 1,
       },
       scrollContExer: {
-        width: "100%"
+        width: "100%",
+      },
+      bottomSpacer: {
+        height: 30
       },
       confirmedExerText: {
         color: primary,
@@ -157,6 +165,17 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingVertical: 10,
         marginVertical: 10,
+        marginHorizontal: 1,
+        width: '100%',
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: tertiary,
+      },
+      buttonLg: { // style={styles.buttonLg}
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        marginVertical: 30,
         marginHorizontal: 1,
         width: '100%',
         borderRadius: 4,

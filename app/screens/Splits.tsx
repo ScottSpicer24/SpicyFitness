@@ -4,15 +4,15 @@ import { styles } from '../Styles'
 import { getSplitsAll, Return, SplitData, addSplitData, toggleActiveSplit, addSplit } from '../functions/ExerciseFunctions'
 import { getCurrentUser } from 'aws-amplify/auth';
 
-/* TODO:
-- add split is slow and reprints the existing splits twice
-- add split day closes keyboard and doesn't add it until you press it again
-- need to focus on inputs when pressed so user doesn't have to scroll
-- if not split day added need to create a single dat for them, or not allow it to be created
-- edit splits feature
-- delete splits feature
-- visual to confirm that new split was added
-*/ 
+/** TODO:
+ * MAJOR ISSUE: add split is slow and reprints the existing splits twice *****
+ * need to focus on inputs when pressed so user doesn't have to scroll
+ * if no is split day added need to create a single day for them, or not allow it to be created
+ * visual to confirm that new split was added
+ * edit splits feature (+ LAMBDA)
+ * delete splits feature (+ LAMBDA)
+ * 
+ */
 
 const Splits = () => {
     const [isLoading, setIsLoading] = useState(true)

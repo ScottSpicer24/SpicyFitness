@@ -7,11 +7,11 @@ import { getCurrentWeight, WeightReturn} from '../functions/WeightFunctions';
 import { getActiveSplit, Return, SplitData } from '../functions/ExerciseFunctions';
 import { useFocusEffect } from '@react-navigation/native';
 
-/*TODO:
-- have sign out button confirm then return to login screen stack. 
-- create the quick start split data
-- NOT refreshing the bottom right button when acrive split is changed
-*/
+/** TODO: 
+ * have sign out button confirm then return to login screen stack. 
+ * create OR remove the quick start split data
+ * NOT refreshing the bottom right button when active split is changed
+ */
 
 const Home = ({navigation, route} : any) => {
     const [username, setUsername] = useState("")

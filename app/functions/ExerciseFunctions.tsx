@@ -57,7 +57,7 @@ export type WorkoutData = {
     "exercise" : {
         "exerciseID": string,
         "name": string,
-        "resistance": number,
+        "resistance": string,
         "sets": number,
         "reps": string[],
         "notes": string
@@ -228,3 +228,6 @@ export async function getLastWorkout(workoutID : string){
     }  
 }
 
+const Stopwatch = () => {
+    
+}

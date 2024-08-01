@@ -5,14 +5,12 @@ import { styles } from '../Styles';
 
 /** TODOs: 
  *  ------
- * position ---> button 
- * center text input on focus
- * automatically go to next when ---> clcked (fill in if empty or partial, don't if not)
- * select prev workouts
- * create a timer component next to --->
- * create function to send AP call to log workout
- * bloom filter of workouts to auto fill in as typing and API to get that data
- * edit amount of sets.
+ * select prev workouts not in this workout currently
+ * create a timer component 
+ * create function to send AP call to log workout 
+ * * |--> might need to update the lambda function to account for confirmed bools
+ * bloom filter of workouts to auto fill in as typing and API to get that data 
+ * edit amount of sets. (probably skip this)
  */
 
 const Workout = ({navigation, route} : any) => {
@@ -72,7 +70,7 @@ const Workout = ({navigation, route} : any) => {
                                     "exercise" : {
                                         "exerciseID": "",
                                         "name": exer.exerciseName,
-                                        "resistance": exer.info[exer.info.length - 1].resistance,
+                                        "resistance": exer.info[exer.info.length - 1].resistance.toString(),
                                         "sets": len,
                                         "reps": exer.info[exer.info.length - 1].reps,
                                         "notes": exer.info[exer.info.length - 1].notes
@@ -158,8 +156,7 @@ const Workout = ({navigation, route} : any) => {
                     updatedWorkouts[workoutIndex].exercise[key] = value;
                     break
                 case 'resistance':
-                    let newResistance : number = Number(value)
-                    updatedWorkouts[workoutIndex].exercise[key] = newResistance;
+                    updatedWorkouts[workoutIndex].exercise[key] = value;
                     // confirm it 
                     updatedWorkouts[workoutIndex].confirmedResistance = true
 
@@ -265,7 +262,9 @@ const Workout = ({navigation, route} : any) => {
                     {/* Row 1: NAME*/}
                     <View style={styles.rowExer}>
                         <TextInput 
-                            style={[styles.textInputExer, styles.fullWidthInputExer]} 
+                            style={[styles.textInputExer, styles.fullWidthInputExer,
+                                item.confirmedName ? styles.confirmedExerInputText : styles.unconfirmedExerInputText
+                            ]} 
                             placeholder={item.exercise.name} 
                             value={item.confirmedName ? lastData.name : ""}
                             onChangeText={(text) => inputChange(index, 'name', text)}
@@ -279,11 +278,13 @@ const Workout = ({navigation, route} : any) => {
                     <View style={styles.rowExer}>
                         
                         <TextInput 
-                            style={[styles.textInputExer, styles.resistInputExer]} 
+                            style={[styles.textInputExer, styles.resistInputExer,
+                                item.confirmedResistance ? styles.confirmedExerInputText : styles.unconfirmedExerInputText
+                            ]} 
                             keyboardType="numeric" 
-                            maxLength={4} 
-                            placeholder={lastData.resistance.toString()}
-                            value={item.confirmedResistance ? lastData.resistance.toString() : ""} 
+                            maxLength={5} 
+                            placeholder={lastData.resistance}
+                            value={item.confirmedResistance ? lastData.resistance : ""} 
                             onChangeText={(text) => inputChange(index, 'resistance', text)}
                             onFocus={() => handleFocus(index, 'resistance')}
                             ref={(el) => inputRefs.current[1] = el}
@@ -293,7 +294,9 @@ const Workout = ({navigation, route} : any) => {
                             return (
                             <TextInput 
                                 key={repIndex}
-                                style={[styles.textInputExer, styles.repInputExer]} 
+                                style={[styles.textInputExer, styles.repInputExer,
+                                    item.confirmedReps[repIndex] ? styles.confirmedExerInputText : styles.unconfirmedExerInputText
+                                ]} 
                                 keyboardType="numeric" 
                                 maxLength={2} 
                                 placeholder={rep} 
@@ -310,7 +313,9 @@ const Workout = ({navigation, route} : any) => {
                     {/* Row 3: NOTES*/}
                     <View style={styles.rowExer}>
                         <TextInput 
-                            style={[styles.textInputExer, styles.fullWidthInputExer]} 
+                            style={[styles.textInputExer, styles.fullWidthInputExer,
+                                item.confirmedNotes ? styles.confirmedExerInputText : styles.unconfirmedExerInputText
+                            ]} 
                             placeholder={lastData.notes} 
                             value={item.confirmedNotes ? lastData.notes : ""}
                             onChangeText={(text) => inputChange(index, 'notes', text)}
@@ -321,7 +326,7 @@ const Workout = ({navigation, route} : any) => {
                 </Pressable>
                 <View style={styles.rowExer} key={-1}>
                     <Pressable key={-1} style={[styles.buttonMed, styles.buttonExer]} onPress={() => console.log("select pressed")}>
-                        <Text style={styles.text}> Select Exercise </Text>
+                        <Text style={styles.text}> Select </Text>
                     </Pressable>
                     <Pressable key={-2} style={[styles.buttonMed, styles.buttonNext]} onPress={() => addExercise()}>
                         <Text style={styles.text}> + </Text>
@@ -329,7 +334,7 @@ const Workout = ({navigation, route} : any) => {
                     <Pressable key={-3} style={[styles.buttonMed, styles.buttonNext]} onPress={() => removeExercise()}>
                         <Text style={styles.text}> - </Text>
                     </Pressable>
-                    <Pressable key={-4} style={[styles.buttonMed, styles.buttonNext]} onPress={() => confirmInput()}>
+                    <Pressable key={-4} style={[styles.buttonMed, styles.buttonExer]} onPress={() => confirmInput()}>
                         <Text style={styles.text}> ---{'>'} </Text>
                     </Pressable>
                 </View>
@@ -361,6 +366,10 @@ const Workout = ({navigation, route} : any) => {
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
                     <ScrollView style={styles.scrollContExer} keyboardShouldPersistTaps="handled">
                         {newWorkout.map((item, index) => (exerciseContainer(item, index)))}
+                        <Pressable style={styles.buttonLg}>
+                            <Text style={styles.text}>Finish</Text>
+                        </Pressable>
+                        <View style={styles.bottomSpacer} />
                     </ScrollView>
                 </View>
             )
@@ -380,7 +389,7 @@ const defaultNewWorkout: WorkoutData = {
     exercise: {
       exerciseID: "",
       name: "New Exercise",
-      resistance: 0,
+      resistance: "0",
       sets: 3,
       reps: ["0", "0", "0"],
       notes: "Notes",

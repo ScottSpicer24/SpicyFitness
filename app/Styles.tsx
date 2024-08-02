@@ -21,6 +21,11 @@ export const styles = StyleSheet.create({
         flexDirection : 'column',
         alignItems: 'center',
       },
+      formSW: { // style={styles.form}
+        marginVertical: 10,
+        flexDirection : 'column',
+        alignItems: 'center',
+      },
       card: { // style={[styles.card, styles.shadowProp]}
         backgroundColor: secondary, //primary
         borderRadius: 8,
@@ -150,6 +155,17 @@ export const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: tertiary,
       },
+      buttonSW: { // style={styles.buttonSW}
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 32,
+        margin: 0,
+        width: 200,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: tertiary,
+      },
       buttonSmall: { // style={styles.buttonSmall}
         alignItems: 'center',
         justifyContent: 'center',
@@ -164,7 +180,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 10,
-        marginVertical: 10,
+        marginBottom: 10,
+        marginTop: 5,
         marginHorizontal: 1,
         width: '100%',
         borderRadius: 4,

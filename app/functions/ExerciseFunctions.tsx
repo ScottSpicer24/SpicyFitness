@@ -1,6 +1,8 @@
 import { getIDToken } from "./AuthFunctions";
 import { getCurrentUser } from 'aws-amplify/auth';
-
+import React, { useState, useRef, useEffect } from 'react'
+import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { styles } from '../Styles';
 
 export type Return = {
     statusCode : number,
@@ -228,6 +230,57 @@ export async function getLastWorkout(workoutID : string){
     }  
 }
 
-const Stopwatch = () => {
+export const Stopwatch = () => {
+    const [time, setTime] = useState(0);
+    const [running, setRunning] = useState(false);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const startTimeRef = useRef<number>(0);
+
+    useEffect(() => {
+        if (running) {
+            intervalRef.current = setInterval(() => {
+            setTime(Date.now() - startTimeRef.current)
+          }, 10) // Update every 10 milliseconds
+        } else {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current)
+                intervalRef.current = null // Clear the interval reference
+            }
+        }
     
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current)
+                intervalRef.current = null // Clear the interval reference
+            }
+        }
+      }, [running]);
+  
+    const startStopwatch = () => {
+        setRunning(true)
+        startTimeRef.current = Date.now() - time
+        console.log(startTimeRef.current)
+    }
+
+    const resetStopwatch = () => {
+        setRunning(false)
+        setTime(0)
+        console.log("reset time")  
+    }
+
+    const formatTime = () => {
+        let min =  Math.floor(time / (1000 * 60)).toString().padStart(2, '0')
+        let sec =  Math.floor(time / (1000) % 60).toString().padStart(2, '0')
+        let ms =  Math.floor(time % (1000)).toString().padStart(2, '0')
+        return `${min}:${sec}.${ms}`
+    }
+
+  return (
+    <View style={styles.formSW}>
+        <Pressable style={styles.buttonSW} onPress={() => running ? resetStopwatch() : startStopwatch()}>
+            <Text style={styles.text}>{formatTime()}</Text>
+        </Pressable>
+    </View>
+  )
 }
+

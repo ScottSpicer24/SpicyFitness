@@ -1,6 +1,6 @@
 import { View, Text, ActivityIndicator, Pressable, TextInput, ScrollView, Alert } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
-import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay } from '../functions/ExerciseFunctions'
+import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay, Stopwatch } from '../functions/ExerciseFunctions'
 import { styles } from '../Styles';
 
 /** TODOs: 
@@ -8,7 +8,7 @@ import { styles } from '../Styles';
  * select prev workouts not in this workout currently
  * create a timer component 
  * create function to send AP call to log workout 
- * * |--> might need to update the lambda function to account for confirmed bools
+ * * --> might need to update the lambda function to account for confirmed bools
  * bloom filter of workouts to auto fill in as typing and API to get that data 
  * edit amount of sets. (probably skip this)
  */
@@ -324,6 +324,7 @@ const Workout = ({navigation, route} : any) => {
                         />
                     </View>
                 </Pressable>
+                < Stopwatch />
                 <View style={styles.rowExer} key={-1}>
                     <Pressable key={-1} style={[styles.buttonMed, styles.buttonExer]} onPress={() => console.log("select pressed")}>
                         <Text style={styles.text}> Select </Text>

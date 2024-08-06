@@ -14,6 +14,11 @@ export type WorkoutReturn = {
     body : ExerData[]
 }
 
+export type AllExercisesReturn = {
+    statusCode : number,
+    body : ExerDataShort[]
+}
+
 export type SplitData = {
     "active" : boolean,
     "description" : string,
@@ -52,6 +57,20 @@ export type ExerData = {
         "sets" : number,
         "resistance" : number
     }[],
+    "userID" : string
+}
+
+export type ExerDataShort = {
+    "ExerciseID" : string,
+    "exerciseName" : string,
+    "info" : {
+        "date" : string,
+        "workoutID": string,
+        "reps" : string[],
+        "notes" : string,
+        "sets" : number,
+        "resistance" : number
+    },
     "userID" : string
 }
 
@@ -230,6 +249,32 @@ export async function getLastWorkout(workoutID : string){
     }  
 }
 
+export async function getAllExercises(splitDayID : string){
+    const idToken = await getIDToken()
+    
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/exercise-all?splitDayID=" + splitDayID
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}`
+            }
+        })
+        if (!apiResp.ok) {
+            console.log(apiResp);
+            throw new Error('Network response in getAllExercises function was not ok');
+        }
+        const data : AllExercisesReturn = await apiResp.json();
+        return data
+    }
+    catch (error){
+        console.error('Error fetching All Exercises:', error);
+        throw error;
+    }  
+    
+}
+
 export const Stopwatch = () => {
     const [time, setTime] = useState(0);
     const [running, setRunning] = useState(false);
@@ -264,14 +309,14 @@ export const Stopwatch = () => {
 
     const resetStopwatch = () => {
         setRunning(false)
-        setTime(0)
         console.log("reset time")  
+        setTime(0)
     }
 
     const formatTime = () => {
         let min =  Math.floor(time / (1000 * 60)).toString().padStart(2, '0')
         let sec =  Math.floor(time / (1000) % 60).toString().padStart(2, '0')
-        let ms =  Math.floor(time % (1000)).toString().padStart(2, '0')
+        let ms =  Math.floor(time % (1000)).toString().padStart(3, '0')
         return `${min}:${sec}.${ms}`
     }
 

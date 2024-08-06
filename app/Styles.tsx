@@ -295,7 +295,41 @@ export const styles = StyleSheet.create({
         backgroundColor: bgColor,
         borderColor: tertiary,
         borderWidth: 1
-      }
+      },
+
+      modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+      },
+      modalContainer: {
+        width: 300,
+        backgroundColor: bgColor,
+        borderRadius: 10,
+        borderWidth: 3,
+        borderColor: tertiary,
+        padding: 10,
+        alignItems: 'center',
+        margin: 10,
+      },
+      modalTitle: {
+        fontSize: 18,
+        marginBottom: 10,
+      },
+      modalButton: {
+        backgroundColor: bgColor,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: tertiary,
+        paddingVertical: 10,
+        paddingHorizontal: 5,
+        width: '100%',
+        marginVertical: 5,
+        marginHorizontal: 0,
+        alignItems: 'center',
+      },
+      
   });
 
 

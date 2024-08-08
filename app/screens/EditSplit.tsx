@@ -4,7 +4,7 @@ import { Return, SplitData, getSplitDay, SplitDayData } from '../functions/Exerc
 import { styles } from '../Styles'
 import { getIDToken } from "../functions/AuthFunctions";
 
-/**TODO
+/**TODO in future
  * Select a split day to edit
  * List exercises for selected 
  * Merge excersises
@@ -16,11 +16,12 @@ import { getIDToken } from "../functions/AuthFunctions";
 const EditSplit = ({navigation, route} : any) => {
     const split : SplitData = route.params.Split
     const [isLoading, setIsLoading] = useState(true)
+    const [err, setErr] = useState(false)
     const [splitDays, setSplitDays] = useState<SplitDayData[]>([])
     const [indexOfActive, setIndexOfActive] = useState(0)
 
     useEffect(() => {
-        console.log("--------edit Split Page use effect-------")
+        setIsLoading(true)
 
         async function initializeInfo(){
             let arr : SplitDayData[] = []
@@ -32,12 +33,13 @@ const EditSplit = ({navigation, route} : any) => {
                 }
                 
                 const resp : Return = await getSplitDay(cleanedID)
-                console.log("get split day: ", resp)
-                console.log("-----------------------------------------")
                 
                 if(resp.statusCode === 200){
                     const newEntry: SplitDayData = await JSON.parse(resp.body)
                     arr.push(newEntry)
+                }
+                else{
+                    setErr(true)
                 }
             }
             setSplitDays(arr)
@@ -47,6 +49,8 @@ const EditSplit = ({navigation, route} : any) => {
     }, [])
 
     async function switchActiveSplitDay(index : number) {
+        setIsLoading(true)
+        
         const oldIndex = indexOfActive
         setIndexOfActive(index)
 
@@ -70,18 +74,25 @@ const EditSplit = ({navigation, route} : any) => {
                 body: JSON.stringify(data)
             })
             if (!response.ok) {
+                setErr(true)
                 throw new Error('Network response was not ok');
+
             }
             const resp: Return = await response.json()
             console.log("API call response: ", resp);
             if(resp.statusCode === 200){
                 split.splitDays = JSON.parse(resp.body)
+            }else{
+                setErr(true)
             }
             console.log("split: ", split)
+
+            setIsLoading(false)
 
             return resp.statusCode
         }
         catch (error){
+            setErr(true)
             console.error('Error fetching Splits:', error);
             throw error;
         } 
@@ -115,6 +126,11 @@ const EditSplit = ({navigation, route} : any) => {
                 </View>
             )
             
+        }
+        else if(err){
+            <View style={styles.form}>
+                <Text style={styles.headingSplits}>Error please reload.</Text>
+            </View>
         }
         else{
             return(

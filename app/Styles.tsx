@@ -155,6 +155,16 @@ export const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: tertiary,
       },
+      buttonAddSplit: { // style={styles.buttonAddSplit}
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 32,
+        margin: 10,
+        width: 200,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: tertiary,
+      },
       buttonSW: { // style={styles.buttonSW}
         alignItems: 'center',
         justifyContent: 'center',
@@ -329,6 +339,98 @@ export const styles = StyleSheet.create({
         marginHorizontal: 0,
         alignItems: 'center',
       },
+
+
+      containerHome: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        marginHorizontal : 20,
+        marginVertical: 10,
+      },
+      row: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      HomePressable: {
+        height: 130, // Adjust as needed
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: bgColor,
+        borderBottomWidth: 3,
+        borderColor: tertiary,
+        borderRadius: 8,
+        paddingVertical: 20,
+        paddingHorizontal: 5,
+        width: '100%',
+        marginVertical: 15,
+      },
+      WeightText: {
+        fontSize: 40,
+        color: primary,
+        textDecorationLine: 'underline',
+      },
+      WeightDateText: {
+        fontSize: 20,
+        color: primary,
+        margin: 5
+      },
+      WeightContainer:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+      },
+      headingHomeText: {
+        fontSize: 20,
+        color: primary,
+        textDecorationLine: 'underline',
+        fontWeight: 'bold',
+      },
+      icon: {
+        width: 75,
+        height: 75,
+        margin: 10,
+      },
+      iconMadeBigger: {
+        width: 90,
+        height: 90,
+        margin: 7,
+      },
+      StartContainer:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+      },
+      StartText: {
+        fontSize: 40,
+        color: primary,
+        marginHorizontal: 20,
+      },
+      ChangeContainer: {
+        height: 135, // Adjust as needed
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: bgColor,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        width: '100%',
+        marginVertical: 15,
+      },
+      ChangePressable:{
+        flex: 1,
+        flexDirection: 'column',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      ChangeText:{
+        fontSize: 15,
+        color: primary,
+        marginTop: 5,
+      }
+
       
   });
 

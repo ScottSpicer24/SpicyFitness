@@ -75,7 +75,12 @@ const Weight = () => {
                 <Text style={styles.heading}>Date: {weightDate}</Text>
 
                 <Text style={{padding: 10, marginTop: 15 }}>Add New Weight Enrty: </Text>
-                <TextInput style={styles.textIn} placeholder='New Weight' onChangeText={(input: string) => setNewWeight(input)} value={newWeight} />
+                <TextInput 
+                  style={styles.textIn}
+                  keyboardType= "numeric" 
+                  placeholder='New Weight' 
+                  onChangeText={(input: string) => setNewWeight(input)} value={newWeight} 
+                />
                 
                 <Pressable style={styles.button} onPress={() => postWeightThenRefresh(newWeight)}>
                   <Text style={styles.text}>Log Weight</Text>

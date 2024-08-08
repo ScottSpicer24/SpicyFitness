@@ -1,16 +1,15 @@
-import { Text, View, ActivityIndicator, Pressable, Button, Alert} from 'react-native'
+import { Text, View, ActivityIndicator, Pressable, Button, Alert, Image} from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react'
 import { signOut, getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken } from '../functions/AuthFunctions';
 import { styles, generateBoxShadowStyle } from '../Styles';
-import { getCurrentWeight, WeightReturn} from '../functions/WeightFunctions';
-import { getActiveSplit, Return, SplitData } from '../functions/ExerciseFunctions';
+import { getCurrentWeight} from '../functions/WeightFunctions';
+import { getActiveSplit, Return, SplitData} from '../functions/ExerciseFunctions';
 import { useFocusEffect } from '@react-navigation/native';
 
 /** TODO: 
  * have sign out button confirm then return to login screen stack. 
- * create OR remove the quick start split data
- * NOT refreshing the bottom right button when active split is changed
+
  */
 
 const Home = ({navigation, route} : any) => {
@@ -63,6 +62,7 @@ const Home = ({navigation, route} : any) => {
             }
           }
         }
+        
       }, [activeSplit]);
 
       //After this page is returned to need to update the activesplit or active split day
@@ -83,7 +83,7 @@ const Home = ({navigation, route} : any) => {
 
         }
       }
-
+      
       //after the split is reset loop through the days 
       async function resetSplitDay(newSplitData : SplitData){
         if(newSplitData !== undefined){
@@ -150,35 +150,41 @@ const Home = ({navigation, route} : any) => {
         else{
           return (
           <View style={styles.form}>
-            <Text style={styles.heading}>{username}</Text>
+            <Text style={styles.headingHomeText}>{username}</Text>
             
-            <View style={styles.smallCardHolder}>
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Weight")}>
-                <Text style={styles.text}>{weight} lbs</Text>
-              </Pressable>
 
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => /*navigation.navigate("Workout")*/Alert.alert('Sorry', 'feature pending, please use start workout instead.', [{text: 'Close', onPress: () => console.log('Closed Pressed')}])}>
-                <Text style={styles.text}>Quick Start</Text>
+              <Pressable style={[styles.HomePressable, styles.row]} onPress={() => navigation.navigate("Weight")}>
+                <Image source={require('../../assets/ScaleIcon.png')}  style={styles.icon} />
+                <View style={styles.WeightContainer}>
+                  <Text style={styles.WeightText}>{weight} lbs</Text>
+                  <Text style={styles.WeightDateText}>Last log: {weightDate}</Text>
+                </View>
               </Pressable>
-            </View>
+           
             
-            <Pressable style={[styles.card, styles.boxShadow]} onPress={() => navigation.navigate("Workout", {SplitDay: activeSplitDay})}>
-              <Text style={styles.text}>Start Workout</Text>
-            </Pressable>
-            
-            <View style={styles.smallCardHolder}>
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("Splits")}>
-                <Text style={styles.text}>Manage Splits</Text>
+              <Pressable style={[styles.HomePressable, styles.row]} onPress={() => navigation.navigate("Workout", {SplitDay: activeSplitDay})}>
+                <Image source={require('../../assets/ListIcon.png')}  style={styles.iconMadeBigger} />
+                
+                <View style={[styles.StartContainer]}>
+                  <Text style={styles.StartText}>Start</Text>
+                  <Text style={styles.StartText}>Workout</Text>
+                </View>
               </Pressable>
+            
+              <View style={[styles.ChangeContainer, styles.row]}>
+                <Pressable style={[styles.ChangePressable]} onPress={() => navigation.navigate("Splits")}>
+                <Image source={require('../../assets/SplitSettings.png')}  style={styles.iconMadeBigger} />
+                  <Text style={styles.ChangeText}>Manage Splits</Text>
+                </Pressable>
 
-              <Pressable style={[styles.cardHalf, styles.boxShadow]} onPress={() => navigation.navigate("EditSplit", {Split: activeSplit})}>
-                <Text style={styles.text}>Edit {activeSplit?.splitName}</Text>
-              </Pressable>
-            </View>
-            
-            
-            
-            
+                <Pressable style={[styles.ChangePressable]} onPress={() => navigation.navigate("EditSplit", {Split: activeSplit})}>
+                  <Image source={require('../../assets/ChangeDayIcon.png')}  style={styles.icon} />
+                  <Text style={styles.ChangeText}>Swap Day</Text>
+                </Pressable>
+              </View>
+
+            <View style={styles.bottomSpacer} />
+                     
             <Pressable style={styles.button} onPress={() => signOut()}>
               <Text style={styles.text}>Sign Out</Text>
             </Pressable>
@@ -188,7 +194,7 @@ const Home = ({navigation, route} : any) => {
       }
 
       return (
-        <View style={styles.container}>
+        <View style={styles.containerHome}>
           {visualComponents()}
         </View>
       )

@@ -5,24 +5,20 @@ import { getSplitsAll, Return, SplitData, addSplitData, toggleActiveSplit, addSp
 import { getCurrentUser } from 'aws-amplify/auth';
 
 /** TODO:
- * MAJOR ISSUE: add split is slow and reprints the existing splits twice *****
  * need to focus on inputs when pressed so user doesn't have to scroll
- * if no is split day added need to create a single day for them, or not allow it to be created
- * visual to confirm that new split was added
  * edit splits feature (+ LAMBDA)
- * delete splits feature (+ LAMBDA)
- * 
+
  */
 
 const Splits = () => {
-    const [isLoading, setIsLoading] = useState(true)
-    const [splitData, setSplitData] = useState<SplitData[]>([])
-    const [showAddSplit, setShowAddSplit] = useState(false)
-    const [newSplitName, setNewSplitName] = useState("")
-    const [newDescription, setNewDescription] = useState("")
-    const [newSplitDays, setNewSplitDays] = useState<string[]>([])
-    const [newDayInSplit, setNewDayInSplit] = useState("")
-    const [activeSplit, setActiveSplit] = useState(-1)
+    const [isLoading, setIsLoading] = useState(true) // for showing loading
+    const [splitData, setSplitData] = useState<SplitData[]>([]) 
+    const [showAddSplit, setShowAddSplit] = useState(false) //bool on weather to sho form or not
+    const [newSplitName, setNewSplitName] = useState("")  // Filling in new data
+    const [newDescription, setNewDescription] = useState("") //" "
+    const [newSplitDays, setNewSplitDays] = useState<string[]>([]) // " "
+    const [newDayInSplit, setNewDayInSplit] = useState("") // Filling in new data
+    const [activeSplit, setActiveSplit] = useState(-1) // index of active split
 
     useEffect(() => {
         async function initializeInfo() {
@@ -43,7 +39,7 @@ const Splits = () => {
           }
           initializeInfo()
            
-    }, [])
+    }, [splitData])
     
     async function fillSplitsArray(parsedBody : any) {
         /* DO NOT setState for each component. Causes issues 
@@ -63,11 +59,10 @@ const Splits = () => {
 
     async function resetSplitsArray() {
       await setSplitData([])
-      const resp = await getSplitsAll()
-      const parsedBody = await JSON.parse(resp.body)
-      await fillSplitsArray(parsedBody)  
     }
 
+
+    // fe to show the actual list 
     const showSplits = (item : SplitData, index : number) => {
         if(item.active){
           return (
@@ -87,11 +82,14 @@ const Splits = () => {
         } 
     }
 
+    //logic when a new split is pressed to activate it
     const updateActiveSplit = async (acivateIndex : number) => {
+      setIsLoading(true)
       const deactivateID = splitData[activeSplit].splitID
       const activateID = splitData[acivateIndex].splitID
       const res = await toggleActiveSplit(deactivateID, activateID)
       console.log("Toggle active split response: ", res)
+      setIsLoading(false)
       if(res === 200){
         splitData[activeSplit].active = false
         splitData[acivateIndex].active = true
@@ -106,7 +104,7 @@ const Splits = () => {
     const showNewSplitDays = (item : string, index : number) => {
       return (
           <View key={index}>
-            <Text>{item}</Text>
+            <Text style={styles.mainTextSplits}>{item}</Text>
           </View>
       )
   }
@@ -116,13 +114,17 @@ const Splits = () => {
       const resp= await getCurrentUser()
       const userID = resp.userId
       
-      const data: addSplitData= {
+      let data: addSplitData= {
         "userID" : userID,
         "splitName" : newSplitName,
         "description" : newDescription,
         "splitDays" : newSplitDays
       }
 
+      if(newSplitDays.length === 0){
+        data.splitDays = ["Workout"]
+      }
+      
       const res = await addSplit(data)
       if(res === 200){
         await resetSplitsArray()
@@ -171,14 +173,18 @@ const Splits = () => {
                       <TextInput style={styles.mainTextInSplits} placeholder='New Split Day' onChangeText={(input: string) => setNewDayInSplit(input)} value={newDayInSplit} />
                       {newSplitDays.map((item, index) => showNewSplitDays(item, index))}
 
-                      <Pressable style={styles.button} onPress={() => {
+                      <Pressable style={styles.buttonAddSplit} onPress={() => {
                         setNewSplitDays(newSplitDays.concat(newDayInSplit))
                         setNewDayInSplit("")
                       }}>
                         <Text style={styles.text}>Add Day</Text>
                       </Pressable>
 
-                      <Pressable style={styles.button} onPress={() => createSplit()}>
+                      <Pressable style={styles.buttonAddSplit} onPress={() => setShowAddSplit(false)}>
+                        <Text style={styles.text}>Cancel</Text>
+                      </Pressable>
+
+                      <Pressable style={styles.buttonAddSplit} onPress={() => createSplit()}>
                         <Text style={styles.text}>Create Split</Text>
                       </Pressable>
                     </View> 

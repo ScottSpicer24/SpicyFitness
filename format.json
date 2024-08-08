@@ -1,0 +1,65 @@
+//used for the logWorkout JSON schema reequest body validator  
+{
+    "type": "object",
+    "required": ["userID", "splitDayID", "exercises"],
+    "properties": {
+      "userID": {
+        "type": "string"
+      },
+      "splitDayID": {
+        "type": "string"
+      },
+      "exercises": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["exercise", "confirmedName", "confirmedResistance", "confirmedReps", "confirmedNotes"],
+          "properties": {
+            "exercise": {
+                "type": "object",
+                "required": ["exerciseID", "name", "resistance", "sets", "reps", "notes"],
+                "properties": {
+                    "exerciseID": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "resistance": {
+                        "type": "string"
+                    },
+                    "sets": {
+                        "type": "number"
+                    },
+                    "reps": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "notes": {
+                        "type": "string"
+                    }
+                }
+            },
+            "confirmedName" : {
+                "type": "boolean"
+            },
+            "confirmedResistance" : {
+                "type": "boolean"
+            },
+            "confirmedReps" : {
+                "type": "array",
+                "items": {
+                    "type" : "boolean"
+                }
+            },
+            "confirmedNotes" : {
+                "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+  

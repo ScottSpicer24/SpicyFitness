@@ -224,6 +224,31 @@ export async function getSplitDay(splitDayID : string){
     }    
 }
 
+export async function getSplitDayName(splitDayID : string){
+    const idToken = await getIDToken()
+    
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/split-day-name?splitDayID=" + splitDayID
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}`
+            }
+        })
+        if (!apiResp.ok) {
+            console.log(apiResp);
+            throw new Error('Network response was not ok');
+        }
+        const data : Return = await apiResp.json();
+        return data.body
+    }
+    catch (error){
+        console.error('Error fetching Active Splits:', error);
+        throw error;
+    }    
+}
+
 export async function getLastWorkout(workoutID : string){
     const idToken = await getIDToken()
     
@@ -273,6 +298,40 @@ export async function getAllExercises(splitDayID : string){
         throw error;
     }  
     
+}
+
+
+export async function logWorkout(userID : string, splitDayID : string, workoutData : WorkoutData[]){
+    const idToken = await getIDToken()
+    const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/logWorkout"
+    const data = {
+        "userID": userID,
+        "splitDayID": splitDayID,
+        "exercises" : workoutData
+    }
+
+    try{
+        const apiResp = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${idToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        if (!apiResp.ok) {
+            console.log("return logging workout: ", apiResp)
+            throw new Error('Network response in logWorkout function was not ok');
+        }
+
+        const resp : Return = await apiResp.json();
+        console.log("return logging workout: ", resp)
+        return resp
+    }
+    catch (error){
+        console.error('Error fetching Splits:', error)
+        throw error;
+    } 
 }
 
 export const Stopwatch = () => {

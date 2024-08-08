@@ -1,13 +1,13 @@
 import { View, Text, ActivityIndicator, Pressable, TextInput, ScrollView, Alert, Modal, FlatList, Keyboard } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
-import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay, Stopwatch, getAllExercises, ExerDataShort, Return, AllExercisesReturn } from '../functions/ExerciseFunctions'
+import { ExerData, WorkoutData, SplitDayData, WorkoutReturn, getLastWorkout, getSplitDay, Stopwatch, getAllExercises, ExerDataShort, Return, AllExercisesReturn, logWorkout } from '../functions/ExerciseFunctions'
 import { styles } from '../Styles';
+import { getCurrentUserID } from '../functions/AuthFunctions';
+import { StackActions } from '@react-navigation/native';
 
 /** TODOs: 
  *  ------
  * bloom filter of workouts to auto fill in as typing and API to get that data 
- * create function to send API call to log workout 
- * * --> might need to update the lambda function to account for confirmed bools
  * edit amount of sets. (probably skip this)
  */
 
@@ -74,7 +74,7 @@ const Workout = ({navigation, route} : any) => {
                             let arr : WorkoutData[] = []
                             for(const exer of res.body){
                                 const len = exer.info[exer.info.length - 1].reps.length // acccess the number or reps
-                                const falseArray = Array(len).fill(false) // create an array of all false
+                                const falseArray = Array(len).fill(false)// create an array of all false
                                 
                                 const newEntry : WorkoutData = {
                                     "exercise" : {
@@ -264,6 +264,21 @@ const Workout = ({navigation, route} : any) => {
         inputRefs.current[1].focus()//is the TextInput for resistance focus it
     }
 
+    const finishWorkout = async () => {
+        // get necessary ID's
+        const userID : string = await getCurrentUserID() ?? 'user_id_of_type_undefined'
+        const splitDayID = splitDayData.splitDayID
+
+        //call function to send API
+        const logRet : Return = await logWorkout(userID, splitDayID, newWorkout)
+        if(logRet.statusCode !== 200){
+            Alert.alert('Error', 'Sorry, logging workout failed', [{text: 'Close', onPress: () => console.log('Closed Pressed in finishWorkout')}])
+        }
+        else{
+            Alert.alert('Done!', 'Workout successfully logged.', [{text: 'Close', onPress: () => navigation.dispatch(StackActions.popToTop())}])
+        }
+    }
+
     //prints/maps the n amount of reps
     const repContainer = (reps : string, index: number, confirmed : boolean) => {
         return (
@@ -441,7 +456,7 @@ const Workout = ({navigation, route} : any) => {
                     <Text style={styles.heading}>Workout: {splitDayData.splitDayName}</Text>
                     <ScrollView style={styles.scrollContExer} keyboardShouldPersistTaps="handled">
                         {newWorkout.map((item, index) => (exerciseContainer(item, index)))}
-                        <Pressable style={styles.buttonLg} onPress={() => console.log("Finish pressed")}>
+                        <Pressable style={styles.buttonLg} onPress={() => finishWorkout()}>
                             <Text style={styles.text}>Finish</Text>
                         </Pressable>
                         <View style={styles.bottomSpacer} />

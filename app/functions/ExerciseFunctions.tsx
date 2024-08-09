@@ -380,11 +380,9 @@ export const Stopwatch = () => {
     }
 
   return (
-    <View style={styles.formSW}>
-        <Pressable style={styles.buttonSW} onPress={() => running ? resetStopwatch() : startStopwatch()}>
-            <Text style={styles.text}>{formatTime()}</Text>
-        </Pressable>
-    </View>
+     <Pressable style={[styles.buttonSW, styles.buttonExer]} onPress={() => running ? resetStopwatch() : startStopwatch()}>
+        <Text style={styles.text}>{formatTime()}</Text>
+    </Pressable>
   )
 }
 

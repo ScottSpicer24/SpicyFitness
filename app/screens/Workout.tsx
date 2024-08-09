@@ -42,7 +42,7 @@ const Workout = ({navigation, route} : any) => {
                 setIsErr(false)
 
                 const resp = await getSplitDay(splitDay)
-                console.log(resp)
+                
                 //if you can get splitday
                 if(resp.statusCode === 200){
                     //prepare split day data
@@ -116,8 +116,9 @@ const Workout = ({navigation, route} : any) => {
                             "userID" : ""
                         }]
                         setPrevWorkout(blank)
-
-                        let arr : WorkoutData[] = [defaultNewWorkout]
+                        
+                        const copiedWorkout = JSON.parse(JSON.stringify(defaultNewWorkout))
+                        let arr : WorkoutData[] = [copiedWorkout]
                         setNewWorkout(arr)
                     }
                 }
@@ -218,7 +219,8 @@ const Workout = ({navigation, route} : any) => {
     //inserts a blank exercise
     const addExercise = () => {
         const updatedWorkouts = [...newWorkout]
-        updatedWorkouts.splice(pressedIndex + 1, 0, { ...defaultNewWorkout });
+        const copiedWorkout = JSON.parse(JSON.stringify(defaultNewWorkout));
+        updatedWorkouts.splice(pressedIndex + 1, 0, { ...copiedWorkout });
         setNewWorkout(updatedWorkouts);
         setPressedIndex(pressedIndex + 1)
     }
@@ -384,19 +386,24 @@ const Workout = ({navigation, route} : any) => {
                             />
                         </View>
                     </Pressable>
-                    < Stopwatch key={-5}/>
+
                     <View style={styles.rowExer} key={-1}>
+                        <Pressable key={-3} style={[styles.buttonAddSub, styles.buttonNext]} onPress={() => removeExercise()}>
+                            <Text style={styles.textArrowAddSub}> - </Text>
+                        </Pressable>
                         <Pressable key={-1} style={[styles.buttonMed, styles.buttonExer]} onPress={() => setModalVisible(true)}>
                             <Text style={styles.text}> Select </Text>
                         </Pressable>
-                        <Pressable key={-2} style={[styles.buttonMed, styles.buttonNext]} onPress={() => addExercise()}>
-                            <Text style={styles.text}> + </Text>
+                        <Pressable key={-2} style={[styles.buttonAddSub, styles.buttonNext]} onPress={() => addExercise()}>
+                            <Text style={styles.textArrowAddSub}> + </Text>
                         </Pressable>
-                        <Pressable key={-3} style={[styles.buttonMed, styles.buttonNext]} onPress={() => removeExercise()}>
-                            <Text style={styles.text}> - </Text>
-                        </Pressable>
-                        <Pressable key={-4} style={[styles.buttonMed, styles.buttonExer]} onPress={() => confirmInput()}>
-                            <Text style={styles.text}> ---{'>'} </Text>
+                        
+                        
+                    </View>
+                    <View style={styles.rowExer} key={-2}>
+                        <Stopwatch key={-5}/>
+                        <Pressable key={-4} style={[styles.buttonSW, styles.buttonExer]} onPress={() => confirmInput()}>
+                            <Text style={styles.textArrowAddSub}>{'\u2192'}</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -494,7 +501,7 @@ const defaultNewWorkout: WorkoutData = {
     confirmedResistance: false,
     confirmedReps: [false, false, false],
     confirmedNotes: false,
-  };
+  }
 
 
 

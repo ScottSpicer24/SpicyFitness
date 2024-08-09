@@ -41,7 +41,7 @@ const MyTheme = {
 };
 
 const AuthNavigator = () => (
-  <AuthStack.Navigator>
+  <AuthStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#83B4FF' }}}>
     <AuthStack.Screen name="Login" component={Login} />
     <AuthStack.Screen name="Register" component={Register} />
     <AuthStack.Screen name="Confirm" component={Confirm} initialParams={{ email: 'scott@email.com' }} />
@@ -50,7 +50,7 @@ const AuthNavigator = () => (
 );
 
 const MainNavigator = () => (
-  <MainStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#83B4FF' } }}>
+  <MainStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#83B4FF' }}}>
     <MainStack.Screen name="Home" component={Home} />
     <MainStack.Screen name="Weight" component={Weight} />
     <MainStack.Screen name="Splits" component={Splits} />

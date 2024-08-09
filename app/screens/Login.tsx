@@ -1,4 +1,4 @@
-import { Button, Text, View, TextInput, Pressable, Alert } from 'react-native'
+import {Text, View, TextInput, Pressable, Alert, Image, ScrollView} from 'react-native'
 import React, { useState }  from 'react'
 import { signIn, signOut } from 'aws-amplify/auth';
 import { handleSignOut } from '../functions/AuthFunctions';
@@ -40,27 +40,32 @@ const Login = ({ navigation } : any) => {
 
     return (
     <View style = {styles.container}>
-        <View style={styles.form}>
-            <Text>Email</Text>
-            <TextInput style={styles.textIn} placeholder='Email' onChangeText={(input: string) => setUser(input)} value={user} />
-            
-            <Text>Password</Text>
-            <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Password' onChangeText={(input: string) => setPassword(input)} value={password} />
+        <ScrollView keyboardShouldPersistTaps="handled">
+            <View style={styles.formLogin} >
+                <Image source={require('../../assets/CuteWeightIcon.png')}  style={styles.iconHeader} />
+                <Text style={styles.AppLoginText}>Spicer Fitness</Text>
 
-            <Pressable style={styles.button} onPress={() => handleSignIn( {user, password} )}>
-                <Text style={styles.text}>Login</Text>
-            </Pressable>
-            
-            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.text}>Register</Text>
-            </Pressable>
+                <Text style={styles.heading}>Email</Text>
+                <TextInput style={styles.textIn} placeholder='Email' onChangeText={(input: string) => setUser(input)} value={user} />
+                
+                <Text style={styles.heading}>Password</Text>
+                <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Password' onChangeText={(input: string) => setPassword(input)} value={password} />
 
-            <Pressable style={styles.button} onPress={() => navigation.navigate('ForgotPW')}>
-                <Text style={styles.text}>Forgot Password</Text>
-            </Pressable>
+                <Pressable style={styles.buttonLogin} onPress={() => handleSignIn( {user, password} )}>
+                    <Text style={styles.text}>Login</Text>
+                </Pressable>
 
-            <Button title="signout" onPress={() => handleSignOut()} />
-        </View>
+                <Pressable style={styles.buttonFP} onPress={() => navigation.navigate('ForgotPW')}>
+                    <Text style={styles.text}>Forgot Password</Text>
+                </Pressable>
+                
+                <Pressable style={styles.buttonSm} onPress={() => navigation.navigate('Register')}>
+                    <Text style={styles.text}>Register</Text>
+                </Pressable>
+
+                {/*<Button title="signout" onPress={() => handleSignOut()} />*/}
+            </View>
+        </ScrollView>
     </View>
   )
 }

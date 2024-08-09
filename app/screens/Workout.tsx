@@ -42,6 +42,7 @@ const Workout = ({navigation, route} : any) => {
                 setIsErr(false)
 
                 const resp = await getSplitDay(splitDay)
+                console.log(resp)
                 //if you can get splitday
                 if(resp.statusCode === 200){
                     //prepare split day data
@@ -56,6 +57,7 @@ const Workout = ({navigation, route} : any) => {
                     }
                     else{
                         setIsErr(true)
+                        console.log("error with getAllExercises")
                     }
                     
                     
@@ -95,6 +97,7 @@ const Workout = ({navigation, route} : any) => {
                             setNewWorkout(arr)
                         }
                         else{
+                            console.log("error with getLastWorkout")
                             setIsErr(true)
                         }
                     }
@@ -119,6 +122,7 @@ const Workout = ({navigation, route} : any) => {
                     }
                 }
                 else{
+                    console.log("error with getSplitDay")
                     setIsErr(true)
                 }
             }

@@ -1,4 +1,4 @@
-import { Text, TextInput, View, Pressable, Modal, Alert } from 'react-native'
+import { Text, TextInput, View, Pressable, Modal, Alert, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import * as EmailValidator from 'email-validator'
 import { signUp } from 'aws-amplify/auth';
@@ -87,26 +87,28 @@ const Register = ({ navigation } : any) => {
 
     return (
     <View style={styles.container}>
-        <View style={styles.form}>
-            <Text>Name</Text>
-            <TextInput style={styles.textIn} placeholder='Name' onChangeText={(input: string) => setName(input)} value={name} />
-            
-            <Text>Email</Text>
-            <TextInput style={styles.textIn} placeholder='Email' onChangeText={(input: string) => setEmail(input)} value={email} />
-            
-            <Text>Phone Number</Text>
-            <TextInput style={styles.textIn} placeholder='Phone Number' onChangeText={(input: string) => setPhoneNum(input)} value={phoneNum} />
+        <ScrollView keyboardShouldPersistTaps="handled">
+            <View style={styles.form}>
+                <Text style={styles.heading}>Name</Text>
+                <TextInput style={styles.textIn} placeholder='Name' onChangeText={(input: string) => setName(input)} value={name} />
+                
+                <Text style={styles.heading}>Email</Text>
+                <TextInput style={styles.textIn} placeholder='Email' onChangeText={(input: string) => setEmail(input)} value={email} />
+                
+                <Text style={styles.heading}>Phone Number</Text>
+                <TextInput style={styles.textIn} placeholder='Phone Number' keyboardType="numeric"  onChangeText={(input: string) => setPhoneNum(input)} value={phoneNum} />
 
-            <Text>Password</Text>
-            <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Password' onChangeText={(input: string) => setPassword(input)} value={password} />
-            
-            <Text>Confirm Password</Text>
-            <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Confirm' onChangeText={(input: string) => setConfirmPassword(input)} value={confirmPassword} />
-            
-            <Pressable style={styles.button} onPress={() => {validateData(name, email, phoneNum, password, confirmPassword)}}>
-                <Text style={styles.text}>Register</Text>
-            </Pressable>
-        </View>
+                <Text style={styles.heading}>Password</Text>
+                <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Password' onChangeText={(input: string) => setPassword(input)} value={password} />
+                
+                <Text style={styles.heading}>Confirm Password</Text>
+                <TextInput style={styles.textIn} secureTextEntry={true} placeholder='Confirm' onChangeText={(input: string) => setConfirmPassword(input)} value={confirmPassword} />
+                
+                <Pressable style={styles.button} onPress={() => {validateData(name, email, phoneNum, password, confirmPassword)}}>
+                    <Text style={styles.text}>Register</Text>
+                </Pressable>
+            </View>
+        </ScrollView>
     </View>
   )
 }

@@ -27,15 +27,23 @@ const Home = ({navigation, route} : any) => {
         generateBoxShadowStyle();
         
         async function initializeInfo() {
+          let weightFound = true
           //I*************** WEIGHT *************************************/ 
           const res = await getCurrentWeight();
           console.log("Weight in home: ", res)
-          if(res.statusCode !== 200){
-            setErr(true)
+          if(res.statusCode === 200){
+            await setWeight(res.body.weight)
+            await setWeightDate(res.body.date)
+            setErr(false)
           }
-          else{setErr(false)}
-          await setWeight(res.body.weight);
-          await setWeightDate(res.body.date);
+          else if(res.statusCode === 404){
+            weightFound = false
+            setWeight('404')
+            setWeightDate('Not Found')
+            setErr(false)
+          }
+          else{setErr(true)}
+          
 
           //**************** SPLIT SECTION **************************** */
 

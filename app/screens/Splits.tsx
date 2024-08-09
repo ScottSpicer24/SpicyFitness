@@ -25,7 +25,9 @@ const Splits = () => {
             try{
               console.log("useEffect called")
               const resp = await getSplitsAll()
+              console.log(resp.body)
               const parsedBody = await JSON.parse(resp.body)
+              console.log( typeof parsedBody)
 
               if(splitData[0] === undefined){
                 await fillSplitsArray(parsedBody)
@@ -39,11 +41,13 @@ const Splits = () => {
           }
           initializeInfo()
            
-    }, [splitData])
+    }, [/*splitData*/])
     
     async function fillSplitsArray(parsedBody : any) {
         /* DO NOT setState for each component. Causes issues 
             because of the asynchronous nature or react native */
+        
+        
         let newEntries: SplitData[] = []
         let activeVal: number = -1
         for (let i = 0; i < parsedBody.length; i++) {

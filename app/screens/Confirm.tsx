@@ -42,8 +42,8 @@ const Confirm = ({navigation, route} : any) => {
     return (
     <View style={styles.container}>
         <View style={styles.form}>
-            <Text>Confirm Email</Text>
-            <TextInput style={styles.textIn} placeholder='Code' onChangeText={(input: string) => setCode(input)} value={code} />
+            <Text style={styles.heading}>Confirm Email</Text>
+                <TextInput style={styles.textIn} placeholder='Code' keyboardType="numeric" onChangeText={(input: string) => setCode(input)} value={code} />
             <Text style={{textAlign: 'center'}}>A code was sent to your email, please type that code above to confirm your email, {email}</Text>
             
             <Pressable style={styles.button} onPress={() => {handleSignUpConfirmation({confirmationCode : code})}}>

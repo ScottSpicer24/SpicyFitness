@@ -55,9 +55,7 @@ const EditSplit = ({navigation, route} : any) => {
         setIndexOfActive(index)
 
         const url = "https://mtpngyp1o4.execute-api.us-east-1.amazonaws.com/dev/toggle-active-splitDay";
-        
         const idToken = await getIDToken()
-
         const data = {
             "splitID" : split.splitID,
             "index" : index,
@@ -85,10 +83,9 @@ const EditSplit = ({navigation, route} : any) => {
             }else{
                 setErr(true)
             }
+
             console.log("split: ", split)
-
             setIsLoading(false)
-
             return resp.statusCode
         }
         catch (error){
@@ -129,7 +126,7 @@ const EditSplit = ({navigation, route} : any) => {
         }
         else if(err){
             <View style={styles.form}>
-                <Text style={styles.headingSplits}>Error please reload.</Text>
+                <Text style={styles.headingSplits}>Error, please return home then come back.</Text>
             </View>
         }
         else{

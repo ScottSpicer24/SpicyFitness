@@ -1,8 +1,9 @@
 import { Text, View, TextInput, Alert, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { confirmSignUp, type ConfirmSignUpInput } from 'aws-amplify/auth';
 import { handleSignIn } from '../functions/AuthFunctions';
 import { styles } from '../Styles';
+import { AuthContext } from '../../authContext';
 
 
 type ConfirmParameters = {
@@ -13,6 +14,7 @@ const Confirm = ({navigation, route} : any) => {
     const [code, setCode] = useState('')
     const email = route.params.email;
     const password = route.params.password
+    const { setIsAuthenticated } = useContext(AuthContext)
 
     async function handleSignUpConfirmation({ confirmationCode }: ConfirmParameters) {
         try {
@@ -23,10 +25,13 @@ const Confirm = ({navigation, route} : any) => {
             });
 
             if(isSignUpComplete){
-                const res = handleSignIn({user : email, password : password})
+                const res = await handleSignIn({user : email, password : password})
 
                 if(!res){
                     Alert.alert('Note', 'Email verified but password is incorrect. Return to the sign in page and try again', [{text: 'Close', onPress: () => console.log('Cancel Pressed')}])
+                }
+                if(res){
+                    setIsAuthenticated(true)
                 }
             }
         } 

@@ -5,9 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Amplify } from 'aws-amplify';
-import { fetchAuthSession, getCurrentUser} from 'aws-amplify/auth';
 import config from './src/amplifyconfiguration.json';
-import { AuthContext } from './app/context/AuthContext';
+import { AuthProvider, AuthContext } from './authContext';
 
 import Login from './app/screens/Login';
 import Register from './app/screens/Register';
@@ -23,9 +22,6 @@ import EditSplit from './app/screens/EditSplit';
 - after login is pressed stack does not switch
 */
 
-
-
-
 Amplify.configure(config);
 
 const AuthStack = createNativeStackNavigator();
@@ -36,7 +32,6 @@ const MyTheme = {
   colors: {
     ...DefaultTheme.colors,
     background: '#FFF6EB'
-    //background: 'white'
   },
 };
 
@@ -60,32 +55,19 @@ const MainNavigator = () => (
 );
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        //const { tokens, credentials, identityId, userSub } = await fetchAuthSession();
-        await fetchAuthSession();
-        
-        const { username, signInDetails } = await getCurrentUser();
-        console.log(username);
-        console.log(signInDetails);
-        
-        setIsAuthenticated(true);
-      } 
-      catch {
-        setIsAuthenticated(false);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
 
   return (
-    <NavigationContainer theme={MyTheme}>
-      {isAuthenticated ? <MainNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer theme={MyTheme}>
+        <AuthContext.Consumer>
+          {({ isAuthenticated }) => (
+            isAuthenticated ? <MainNavigator/> : <AuthNavigator/>
+          )}
+        </AuthContext.Consumer>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
+
+
 

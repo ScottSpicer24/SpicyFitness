@@ -1,18 +1,18 @@
-import { signIn, signOut, fetchAuthSession, getCurrentUser} from 'aws-amplify/auth';
-
-  
+import { signIn, fetchAuthSession, getCurrentUser} from 'aws-amplify/auth';
+import { AuthContext } from '../../authContext';
+import { useContext }  from 'react'
 
 type SigninParameters = {
     user: string,
     password: string
 };
 
-export const handleSignOut = async () => {
-    await signOut();
-}
+
 
 export const handleSignIn = async ({ user, password } : SigninParameters) => {
-    try {
+
+  
+  try {
         const { isSignedIn, nextStep } = await signIn({ 
             username: user, 
             password: password,
@@ -20,10 +20,10 @@ export const handleSignIn = async ({ user, password } : SigninParameters) => {
                 authFlowType : 'USER_PASSWORD_AUTH'
             }
         });
-        console.log(isSignedIn);
-        console.log(nextStep);  
+        console.log(isSignedIn)
+        console.log(nextStep)
 
-        return isSignedIn;
+        return isSignedIn
     } 
     catch (error) {
         console.log('error signing in', error);

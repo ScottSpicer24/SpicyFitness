@@ -1,15 +1,17 @@
 import { Text, View, ActivityIndicator, Pressable, Button, Alert, Image} from 'react-native'
-import React, { useEffect, useState, useCallback } from 'react'
-import { signOut, getCurrentUser } from 'aws-amplify/auth';
+import React, { useEffect, useState, useCallback, useContext } from 'react'
+import { getCurrentUser } from 'aws-amplify/auth';
 import { getIDToken } from '../functions/AuthFunctions';
 import { styles, generateBoxShadowStyle } from '../Styles';
 import { getCurrentWeight} from '../functions/WeightFunctions';
 import { getActiveSplit, Return, SplitData} from '../functions/ExerciseFunctions';
 import { useFocusEffect } from '@react-navigation/native';
+import { AuthContext } from '../../authContext';
+import { signOut } from 'aws-amplify/auth';
+
 
 /** TODO: 
  * have sign out button confirm then return to login screen stack. 
-
  */
 
 const Home = ({navigation, route} : any) => {
@@ -21,6 +23,8 @@ const Home = ({navigation, route} : any) => {
     const [activeSplitDay, setActiveSplitDay] = useState("")
     const [err, setErr] = useState(false)
     const [refresh, setRefresh] = useState(false)
+
+    const { setIsAuthenticated } = useContext(AuthContext) 
 
       useEffect(() => {
         getUsersName();
@@ -133,7 +137,11 @@ const Home = ({navigation, route} : any) => {
           )
         }
 
-        
+        const handleSignOut = async () => {
+          await signOut();
+          setIsAuthenticated(false)
+        }
+
       const visualComponents = () => {
         if(isLoading){
           return (
@@ -193,7 +201,7 @@ const Home = ({navigation, route} : any) => {
 
             <View style={styles.bottomSpacer} />
                      
-            <Pressable style={styles.button} onPress={() => signOut()}>
+            <Pressable style={styles.button} onPress={() => handleSignOut()}>
               <Text style={styles.text}>Sign Out</Text>
             </Pressable>
           </View>

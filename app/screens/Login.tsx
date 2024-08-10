@@ -1,7 +1,7 @@
 import {Text, View, TextInput, Pressable, Alert, Image, ScrollView} from 'react-native'
-import React, { useState }  from 'react'
+import React, { useState, useContext }  from 'react'
 import { signIn, signOut } from 'aws-amplify/auth';
-import { handleSignOut } from '../functions/AuthFunctions';
+import { AuthContext } from '../../authContext';
 import { styles } from '../Styles';
 
 type SigninParameters = {
@@ -12,6 +12,8 @@ type SigninParameters = {
 const Login = ({ navigation } : any) => {
     const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
+    const { setIsAuthenticated } = useContext(AuthContext)
+
   
     const handleSignIn = async ({ user, password } : SigninParameters) => {
         try {
@@ -27,6 +29,9 @@ const Login = ({ navigation } : any) => {
 
             if(nextStep.signInStep === 'CONFIRM_SIGN_UP'){
                 navigation.navigate('Confirm', {email: user, password : password}) 
+            }
+            else if(nextStep.signInStep === 'DONE'){
+                setIsAuthenticated(true)
             }
         } 
         catch (error : any) {

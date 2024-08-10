@@ -74,7 +74,6 @@ const Register = ({ navigation } : any) => {
             if(nextStep.signUpStep === 'CONFIRM_SIGN_UP'){
                 navigation.navigate('Confirm', {email: email, password : password}) 
             }
-            
         }
         catch (error : any) {
             // Check if error message is available
